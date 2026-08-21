@@ -1,0 +1,2955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Teshe Tech — Learn, Build, Buy</title>
+  <style>
+    /* ----- RESET & BASE ----- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: hsl(250, 94%, 19%);
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      color: #fff;
+      line-height: 1.5;
+      padding-bottom: 2rem;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ----- TECH BACKGROUND DECORATIONS ----- */
+    .tech-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0.08;
+    }
+    .tech-bg .circuit {
+      position: absolute;
+      border: 2px solid #00ffff;
+      border-radius: 50%;
+      animation: pulse 4s ease-in-out infinite;
+    }
+    .tech-bg .circuit:nth-child(1) { width: 300px; height: 300px; top: 10%; left: 5%; animation-delay: 0s; }
+    .tech-bg .circuit:nth-child(2) { width: 200px; height: 200px; bottom: 20%; right: 10%; animation-delay: 1s; }
+    .tech-bg .circuit:nth-child(3) { width: 400px; height: 400px; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 2s; }
+    .tech-bg .circuit:nth-child(4) { width: 150px; height: 150px; top: 20%; right: 20%; animation-delay: 0.5s; }
+    .tech-bg .circuit:nth-child(5) { width: 250px; height: 250px; bottom: 10%; left: 20%; animation-delay: 1.5s; }
+    
+    .tech-bg .dot-grid {
+      position: absolute;
+      display: grid;
+      grid-template-columns: repeat(20, 1fr);
+      gap: 20px;
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+    }
+    .tech-bg .dot-grid span {
+      width: 4px;
+      height: 4px;
+      background: #00ffff;
+      border-radius: 50%;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+    .tech-bg .dot-grid span:nth-child(odd) { animation-delay: 0.5s; }
+    .tech-bg .dot-grid span:nth-child(3n) { animation-delay: 1s; }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(1) rotate(0deg); }
+      50% { opacity: 0.8; transform: scale(1.1) rotate(180deg); }
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 0.8; }
+    }
+
+    /* ----- FLOATING TECH ICONS ----- */
+    .floating-icons {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .floating-icons .icon {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.06;
+      animation: float 20s linear infinite;
+    }
+    .floating-icons .icon:nth-child(1) { top: 10%; left: 5%; animation-duration: 25s; }
+    .floating-icons .icon:nth-child(2) { top: 20%; right: 10%; animation-duration: 30s; animation-delay: 2s; }
+    .floating-icons .icon:nth-child(3) { bottom: 30%; left: 15%; animation-duration: 22s; animation-delay: 4s; }
+    .floating-icons .icon:nth-child(4) { bottom: 10%; right: 20%; animation-duration: 28s; animation-delay: 1s; }
+    .floating-icons .icon:nth-child(5) { top: 50%; left: 50%; animation-duration: 35s; animation-delay: 3s; }
+    .floating-icons .icon:nth-child(6) { top: 5%; left: 50%; animation-duration: 20s; animation-delay: 5s; }
+    .floating-icons .icon:nth-child(7) { bottom: 5%; left: 30%; animation-duration: 26s; animation-delay: 2.5s; }
+    .floating-icons .icon:nth-child(8) { top: 40%; right: 5%; animation-duration: 32s; animation-delay: 1.5s; }
+    
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(100px, -50px) rotate(90deg); }
+      50% { transform: translate(200px, 0) rotate(180deg); }
+      75% { transform: translate(100px, 50px) rotate(270deg); }
+      100% { transform: translate(0, 0) rotate(360deg); }
+    }
+
+    /* ----- OVERLAY (blocks content until login) ----- */
+    #authOverlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, hsl(250, 80%, 15%) 0%, hsl(250, 94%, 10%) 100%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #authOverlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        linear-gradient(0deg, rgba(0,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    #authOverlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    #authOverlay .auth-box {
+      max-width: 420px;
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      padding: 2.5rem 2rem;
+      border-radius: 32px;
+      border: 1px solid rgba(0,255,255,0.2);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(0,255,255,0.1);
+      position: relative;
+      z-index: 1;
+    }
+    #authOverlay .auth-box::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 34px;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(0,255,255,0.3), transparent, rgba(0,255,255,0.3));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    #authOverlay .auth-box .auth-logo {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    #authOverlay .auth-box .auth-logo .logo-icon {
+      font-size: 4rem;
+      display: block;
+      margin-bottom: 0.3rem;
+      filter: drop-shadow(0 0 20px rgba(0,255,255,0.3));
+    }
+    #authOverlay .auth-box .auth-logo h1 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #facc15, #ff6b6b, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    #authOverlay .auth-box .auth-logo p {
+      color: #888;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+    }
+    #authOverlay .auth-box h1 {
+      text-align: center;
+      color: #facc15;
+      font-size: 1.8rem;
+      margin-bottom: 0.25rem;
+    }
+    #authOverlay .auth-box .sub {
+      text-align: center;
+      color: #aaa;
+      margin-bottom: 1.5rem;
+    }
+    #authOverlay .auth-box label {
+      display: block;
+      margin: 0.8rem 0 0.3rem;
+      font-weight: 500;
+      color: #ddd;
+      font-size: 0.9rem;
+    }
+    #authOverlay .auth-box input {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 1rem;
+      transition: 0.2s;
+    }
+    #authOverlay .auth-box input:focus {
+      outline: none;
+      border-color: #facc15;
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 0 20px rgba(250,204,21,0.1);
+    }
+    #authOverlay .auth-box .auth-btn {
+      width: 100%;
+      margin-top: 1.2rem;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      background: linear-gradient(135deg, #0285ff, #00ffff);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(0,133,255,0.3);
+    }
+    #authOverlay .auth-box .auth-btn:hover { transform: scale(1.02); box-shadow: 0 6px 30px rgba(0,133,255,0.5); }
+    #authOverlay .auth-box .auth-btn.secondary { background: linear-gradient(135deg, #28a745, #00ff88); }
+    #authOverlay .auth-box .auth-btn.secondary:hover { box-shadow: 0 6px 30px rgba(40,167,69,0.5); }
+    #authOverlay .auth-box .toggle-link {
+      text-align: center;
+      margin-top: 1rem;
+      color: #aaa;
+    }
+    #authOverlay .auth-box .toggle-link a {
+      color: #facc15;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    #authOverlay .auth-box .toggle-link a:hover { text-decoration: underline; }
+    #authOverlay .auth-error {
+      color: #ff6b6b;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      text-align: center;
+      min-height: 1.4rem;
+    }
+    #forgotLink {
+      display: block;
+      text-align: right;
+      color: #facc15;
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+      cursor: pointer;
+    }
+    #forgotLink:hover { text-decoration: underline; }
+
+    /* ----- HEADER / NAV ----- */
+    header {
+      background: rgba(240,240,240,0.95);
+      backdrop-filter: blur(10px);
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(0,255,255,0.1);
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #0d0d0d;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .logo-area img { width: 40px; height: auto; display: block; filter: drop-shadow(0 0 10px rgba(0,133,255,0.3)); }
+    .logo-area span { color: #0285ff; }
+    .nav-toggle {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #0d0d0d;
+      display: block;
+      line-height: 1;
+      padding: 0 0.25rem;
+    }
+    .nav-menu {
+      flex-basis: 100%;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.2s ease;
+      background: rgba(240,240,240,0.95);
+      border-radius: 0 0 12px 12px;
+      padding: 0 0.5rem;
+    }
+    .nav-menu.open { max-height: 700px; padding: 0.75rem 0.5rem 1rem; }
+    .nav-menu ul { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+    .nav-menu ul li a {
+      display: block;
+      padding: 0.6rem 0.75rem;
+      border-radius: 8px;
+      color: #0d0d0d;
+      font-weight: 500;
+      background: transparent;
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav-menu ul li a:hover { background: rgba(0,133,255,0.1); }
+    .nav-menu ul li a.active { background: #0285ff; color: #fff; }
+    .admin-badge {
+      background: #facc15; color: #0d0d0d; font-size: 0.6rem;
+      font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 20px;
+      margin-left: 0.3rem; vertical-align: middle;
+    }
+    #logoutBtn {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.8rem;
+      transition: 0.2s;
+    }
+    #logoutBtn:hover { background: #b02a37; }
+
+    /* ----- HERO ----- */
+    .hero-title { text-align: center; font-size: clamp(1.4rem, 5vw, 2.2rem); margin: 1rem 0 0.5rem; color: #fff; text-shadow: 0 0 30px rgba(0,255,255,0.2); }
+    .hero-title span { color: #facc15; }
+    .hero-image { width: 100%; max-height: 220px; object-fit: cover; display: block; margin: 0.5rem 0 0.25rem; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+    .tagline { text-align: center; font-weight: 600; font-size: 1.2rem; color: #ddd; margin-bottom: 1rem; letter-spacing: 3px; }
+
+    /* ----- ACTION CARDS ----- */
+    .works {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      padding: 0.5rem 0.75rem 1.25rem;
+    }
+    .works h1 {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(0,255,255,0.2);
+      border-radius: 30px;
+      padding: 0.75rem 1.25rem;
+      font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: center;
+      flex: 1 0 140px;
+      max-width: 220px;
+      margin: 0 auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .works h1#startlearn { background: linear-gradient(135deg, rgba(253,11,229,0.3), rgba(138,43,226,0.3)); border-color: blueviolet; }
+    .works h1#buyproduct { background: linear-gradient(135deg, rgba(0,123,255,0.3), rgba(0,255,255,0.3)); border-color: #00ccff; }
+    .works h1#orderproducts { background: linear-gradient(135deg, rgba(40,167,69,0.3), rgba(0,255,136,0.3)); border-color: #28a745; }
+    .works h1:hover { transform: scale(1.05); box-shadow: 0 8px 30px rgba(0,255,255,0.3); }
+
+    /* ----- SECTIONS ----- */
+    .section-head {
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin: 1.8rem 0 0.8rem;
+      color: #fff;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 20px rgba(0,255,255,0.1);
+    }
+
+    /* ----- COURSE GRIDS ----- */
+    .cources, .courceses {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem 1.2rem;
+      padding: 0.5rem 0.75rem 1.5rem;
+    }
+    .cources a, .courceses a {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      border-radius: 30px;
+      border: 2px solid rgba(0,255,255,0.15);
+      padding: 1.2rem 0.5rem;
+      width: 150px;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: 0.2s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      flex: 0 1 150px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .cources a::before, .courceses a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,255,255,0.05), transparent);
+      pointer-events: none;
+    }
+    .cources a.locked { border-color: rgba(255,107,107,0.3); }
+    .cources a.unlocked { border-color: rgba(81,207,102,0.3); background: rgba(81,207,102,0.1); }
+    .cources a.free { border-color: rgba(250,204,21,0.3); background: rgba(250,204,21,0.05); }
+    .cources a.sample { border-color: rgba(23,162,184,0.3); background: rgba(23,162,184,0.05); }
+    .cources a .lock-icon { font-size: 1.2rem; margin-bottom: 0.2rem; }
+    .cources a .unlock-btn {
+      margin-top: 0.5rem;
+      background: linear-gradient(135deg, #0285ff, #00ffff);
+      color: #fff;
+      border: none;
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .cources a .unlock-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,133,255,0.3); }
+    .cources a .price-tag {
+      font-size: 0.8rem;
+      color: #facc15;
+      background: rgba(0,0,0,0.2);
+      padding: 0.1rem 0.6rem;
+      border-radius: 12px;
+      margin-top: 0.2rem;
+    }
+    .cources a .course-type {
+      font-size: 0.65rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: 10px;
+      margin-top: 0.2rem;
+      background: rgba(255,255,255,0.05);
+    }
+    .cources a .course-category {
+      font-size: 0.6rem;
+      color: rgba(255,255,255,0.5);
+      margin-top: 0.1rem;
+    }
+    .cources a .video-count {
+      font-size: 0.6rem;
+      color: #00ffff;
+      margin-top: 0.1rem;
+    }
+    .cources a:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 12px 40px rgba(0,255,255,0.15); }
+
+    /* ----- HOW IT WORKS ----- */
+    .howwork {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem;
+      padding: 0.5rem 0.75rem 1.5rem;
+    }
+    .howwork h2 {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      border-radius: 20px;
+      border: 2px solid rgba(0,255,255,0.15);
+      padding: 1.2rem 0.8rem;
+      width: 200px;
+      min-height: 160px;
+      text-align: center;
+      font-size: 1rem;
+      flex: 1 0 170px;
+      max-width: 260px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .howwork h2 span {
+      display: block;
+      font-weight: 400;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      margin-top: 0.6rem;
+      line-height: 1.4;
+    }
+    .howwork h2#order { border-color: rgba(0,170,255,0.3); }
+
+    /* ----- SERVICE BUTTONS ----- */
+    .service {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem 1.2rem;
+      padding: 0.5rem 0.75rem 1rem;
+    }
+    .service a {
+      display: inline-block;
+      padding: 0.7rem 1.6rem;
+      border-radius: 40px;
+      border: 2px solid rgba(0,255,255,0.2);
+      font-weight: 600;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+    .service a#learning { background: linear-gradient(135deg, rgba(0,255,0,0.2), rgba(0,255,255,0.2)); }
+    .service a:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(0,255,255,0.2); }
+
+    /* ----- VIDEO GRID ----- */
+    .video-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem;
+      padding: 0.5rem 0.75rem 1.5rem;
+    }
+    .video-item {
+      position: relative;
+      max-width: 400px;
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid rgba(0,255,255,0.1);
+      backdrop-filter: blur(10px);
+    }
+    .video-item iframe, .video-item video {
+      width: 100%;
+      aspect-ratio: 16/9;
+      display: block;
+      background: #000;
+    }
+    .video-item .video-info {
+      padding: 0.8rem 1rem;
+      background: rgba(0,0,0,0.3);
+    }
+    .video-item .video-info h4 {
+      color: #facc15;
+      font-size: 0.95rem;
+    }
+    .video-item .video-info p {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.8rem;
+      margin-top: 0.2rem;
+    }
+    .video-item .video-info .video-meta {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.3);
+      margin-top: 0.3rem;
+    }
+    .video-item .video-delete {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    .video-item:hover .video-delete { display: flex; }
+
+    /* ----- COURSE DETAIL VIEW ----- */
+    .course-detail {
+      display: none;
+      padding: 1.5rem 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .course-detail.active { display: block; }
+    .course-detail .back-btn {
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(0,255,255,0.2);
+      padding: 0.5rem 1.2rem;
+      border-radius: 30px;
+      color: #fff;
+      cursor: pointer;
+      margin-bottom: 1rem;
+      transition: 0.2s;
+      backdrop-filter: blur(10px);
+    }
+    .course-detail .back-btn:hover { background: rgba(255,255,255,0.1); }
+    .course-detail .course-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .course-detail .course-header h2 {
+      color: #facc15;
+      font-size: 2rem;
+      text-shadow: 0 0 30px rgba(250,204,21,0.2);
+    }
+    .course-detail .course-header p {
+      color: rgba(255,255,255,0.6);
+      margin-top: 0.3rem;
+    }
+    .course-video-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem;
+      padding: 0.5rem 0.75rem 1.5rem;
+    }
+    .course-video-item {
+      max-width: 400px;
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid rgba(0,255,255,0.1);
+      backdrop-filter: blur(10px);
+    }
+    .course-video-item iframe, .course-video-item video {
+      width: 100%;
+      aspect-ratio: 16/9;
+      display: block;
+      background: #000;
+    }
+    .course-video-item .video-info {
+      padding: 0.8rem 1rem;
+      background: rgba(0,0,0,0.3);
+    }
+    .course-video-item .video-info h4 {
+      color: #facc15;
+      font-size: 0.95rem;
+    }
+    .course-video-item .video-info p {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.8rem;
+      margin-top: 0.2rem;
+    }
+    .course-video-item .video-info .video-meta {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.3);
+      margin-top: 0.3rem;
+    }
+
+    /* ----- PRODUCT PAGES ----- */
+    .product-page {
+      display: none;
+      padding: 1.5rem 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .product-page.active { display: block; }
+    .product-page h2 { font-size: 2rem; margin-bottom: 0.5rem; color: #facc15; text-align: center; text-shadow: 0 0 30px rgba(250,204,21,0.2); }
+    .product-page .subtitle { text-align: center; color: rgba(255,255,255,0.6); margin-bottom: 2rem; }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    .product-card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(0,255,255,0.1);
+      border-radius: 20px;
+      padding: 1.2rem;
+      text-align: center;
+      transition: 0.25s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .product-card:hover { transform: translateY(-5px); border-color: rgba(0,255,255,0.3); box-shadow: 0 12px 40px rgba(0,255,255,0.1); }
+    .product-card .icon { font-size: 2.8rem; margin-bottom: 0.5rem; }
+    .product-card h3 { font-size: 1.2rem; margin-bottom: 0.3rem; color: #fff; }
+    .product-card .price { color: #facc15; font-weight: 700; font-size: 1.1rem; margin: 0.5rem 0; }
+    .product-card .desc { font-size: 0.9rem; color: rgba(255,255,255,0.6); margin-bottom: 1rem; }
+    .btn-buy {
+      background: linear-gradient(135deg, #0285ff, #00ffff);
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 20px rgba(0,133,255,0.3);
+    }
+    .btn-buy:hover { transform: scale(1.05); box-shadow: 0 6px 30px rgba(0,133,255,0.5); }
+
+    /* ----- PAYMENT INFO ----- */
+    .payment-info {
+      display: none;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border: 1px solid rgba(0,255,255,0.1);
+    }
+    .payment-info.visible {
+      display: block;
+    }
+    .payment-info h3 { color: #facc15; margin-bottom: 0.5rem; }
+    .payment-info .account {
+      background: rgba(0,0,0,0.2);
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+      margin: 0.4rem 0;
+      font-family: monospace;
+      font-size: 1rem;
+    }
+    .payment-info .account .label { color: rgba(255,255,255,0.5); font-family: system-ui; }
+    .payment-info .account .value { color: #fff; font-weight: 600; letter-spacing: 0.5px; }
+
+    /* ----- DEPOSIT MODAL ----- */
+    .deposit-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(20px);
+      z-index: 9998;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .deposit-modal.active {
+      display: flex;
+    }
+    .deposit-modal .modal-box {
+      max-width: 450px;
+      width: 100%;
+      background: radial-gradient(ellipse at center, hsl(250, 80%, 15%), hsl(250, 94%, 10%));
+      border: 2px solid rgba(0,255,255,0.2);
+      border-radius: 28px;
+      padding: 2rem 1.8rem;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    }
+    .deposit-modal .modal-box h3 {
+      color: #facc15;
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    .deposit-modal .modal-box .modal-sub {
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      margin-bottom: 1.2rem;
+      font-size: 0.95rem;
+    }
+    .deposit-modal .modal-box label {
+      display: block;
+      color: rgba(255,255,255,0.8);
+      margin: 0.8rem 0 0.3rem;
+      font-weight: 500;
+    }
+    .deposit-modal .modal-box input {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 1rem;
+      transition: 0.2s;
+    }
+    .deposit-modal .modal-box input:focus {
+      outline: none;
+      border-color: #facc15;
+      background: rgba(255,255,255,0.08);
+    }
+    .deposit-modal .modal-box .modal-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+      justify-content: center;
+    }
+    .deposit-modal .modal-box .modal-actions button {
+      padding: 0.7rem 1.8rem;
+      border: none;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .deposit-modal .modal-box .modal-actions .btn-confirm {
+      background: linear-gradient(135deg, #28a745, #00ff88);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(40,167,69,0.3);
+    }
+    .deposit-modal .modal-box .modal-actions .btn-confirm:hover { transform: scale(1.05); box-shadow: 0 6px 30px rgba(40,167,69,0.5); }
+    .deposit-modal .modal-box .modal-actions .btn-cancel {
+      background: linear-gradient(135deg, #dc3545, #ff6b6b);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(220,53,69,0.3);
+    }
+    .deposit-modal .modal-box .modal-actions .btn-cancel:hover { transform: scale(1.05); box-shadow: 0 6px 30px rgba(220,53,69,0.5); }
+
+    /* ----- ORDER FORM ----- */
+    .order-form {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      padding: 1.8rem;
+      border-radius: 28px;
+      border: 1px solid rgba(0,255,255,0.1);
+    }
+    .order-form label { display: block; margin: 1rem 0 0.3rem; font-weight: 500; color: rgba(255,255,255,0.8); }
+    .order-form input, .order-form textarea {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 1rem;
+      transition: 0.2s;
+    }
+    .order-form input:focus, .order-form textarea:focus {
+      outline: none;
+      border-color: #facc15;
+      background: rgba(255,255,255,0.08);
+    }
+    .order-form textarea { min-height: 100px; resize: vertical; }
+    .order-form .btn-submit {
+      margin-top: 1.2rem;
+      background: linear-gradient(135deg, #facc15, #f5b800);
+      color: #0d0d0d;
+      font-weight: 700;
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.2s;
+    }
+    .order-form .btn-submit:hover { transform: scale(1.05); box-shadow: 0 6px 30px rgba(250,204,21,0.3); }
+
+    /* ----- ADMIN PANEL ----- */
+    .admin-panel {
+      display: none;
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 28px;
+      border: 1px solid rgba(0,255,255,0.08);
+    }
+    .admin-panel.active { display: block; }
+    .admin-panel h2 { color: #facc15; text-align: center; margin-bottom: 0.5rem; }
+    .admin-panel .sub { text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 1.5rem; }
+    .admin-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .admin-tabs button {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 0.5rem 1.2rem;
+      border-radius: 30px;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      transition: 0.2s;
+      font-weight: 500;
+    }
+    .admin-tabs button.active { background: rgba(250,204,21,0.2); color: #facc15; border-color: #facc15; }
+    .admin-tabs button:hover { background: rgba(255,255,255,0.1); }
+    .admin-tab-content { display: none; }
+    .admin-tab-content.active { display: block; }
+    .admin-table-wrap { overflow-x: auto; }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .admin-table th {
+      background: rgba(255,255,255,0.05);
+      padding: 0.7rem 0.5rem;
+      text-align: left;
+      color: #facc15;
+      border-bottom: 2px solid rgba(255,255,255,0.05);
+    }
+    .admin-table td {
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      vertical-align: middle;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.1rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .badge.active { background: #28a745; color: #fff; }
+    .badge.banned { background: #dc3545; color: #fff; }
+    .badge.pending { background: #facc15; color: #0d0d0d; }
+    .badge.approved { background: #17a2b8; color: #fff; }
+    .badge.rejected { background: #dc3545; color: #fff; }
+    .badge.free { background: #facc15; color: #0d0d0d; }
+    .badge.locked { background: #dc3545; color: #fff; }
+    .badge.sample { background: #17a2b8; color: #fff; }
+
+    .admin-btn {
+      padding: 0.2rem 0.7rem;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: 0.15s;
+      margin: 0.1rem 0.2rem;
+    }
+    .admin-btn.reset { background: #facc15; color: #0d0d0d; }
+    .admin-btn.ban { background: #dc3545; color: #fff; }
+    .admin-btn.restore { background: #28a745; color: #fff; }
+    .admin-btn.approve { background: #17a2b8; color: #fff; }
+    .admin-btn.reject { background: #dc3545; color: #fff; }
+    .admin-btn.edit { background: #ff922b; color: #fff; }
+    .admin-btn.green { background: #28a745; color: #fff; }
+    .admin-btn:hover { opacity: 0.8; transform: scale(0.95); }
+
+    .msg-item {
+      background: rgba(255,255,255,0.03);
+      padding: 0.8rem 1rem;
+      border-radius: 16px;
+      margin-bottom: 0.6rem;
+      border-left: 3px solid #facc15;
+    }
+    .msg-item .msg-meta { font-size: 0.75rem; color: rgba(255,255,255,0.3); margin-top: 0.3rem; }
+    .msg-item .msg-actions { margin-top: 0.4rem; }
+
+    /* ----- TOAST ----- */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(30,41,59,0.95);
+      backdrop-filter: blur(20px);
+      color: #facc15;
+      padding: 0.8rem 1.8rem;
+      border-radius: 50px;
+      border: 2px solid #facc15;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      font-weight: 600;
+      font-size: 1.1rem;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.2s ease;
+      pointer-events: none;
+      text-align: center;
+      max-width: 90%;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ----- FOOTER ----- */
+    .footer {
+      text-align: center;
+      padding: 1.5rem 0.5rem 0.5rem;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(255,255,255,0.03);
+      margin-top: 1rem;
+    }
+
+    /* ----- UPLOAD AREA ----- */
+    .upload-area {
+      border: 2px dashed rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-bottom: 1rem;
+    }
+    .upload-area:hover, .upload-area.dragover {
+      border-color: #facc15;
+      background: rgba(255,255,255,0.03);
+    }
+    .upload-area input[type="file"] {
+      display: none;
+    }
+
+    .admin-form-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .admin-form-group select, .admin-form-group input {
+      padding: 0.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+    }
+    .admin-form-group select option {
+      background: #1a1a3e;
+    }
+
+    /* ----- CONTACT SOCIAL LINKS ----- */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      max-width: 800px;
+      margin: 1.5rem auto;
+    }
+    .contact-card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(0,255,255,0.1);
+      border-radius: 20px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      transition: 0.25s;
+      cursor: pointer;
+      text-decoration: none;
+      color: #fff;
+    }
+    .contact-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(0,255,255,0.3);
+      box-shadow: 0 12px 40px rgba(0,255,255,0.1);
+    }
+    .contact-card .contact-icon {
+      font-size: 2.8rem;
+      margin-bottom: 0.5rem;
+    }
+    .contact-card .contact-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #facc15;
+    }
+    .contact-card .contact-detail {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      margin-top: 0.3rem;
+      word-break: break-all;
+    }
+
+    /* ----- RESPONSIVE ----- */
+    @media (min-width: 640px) {
+      .nav-toggle { display: none; }
+      .nav-menu {
+        flex-basis: auto;
+        max-height: none !important;
+        overflow: visible;
+        padding: 0 !important;
+        background: transparent;
+        border-radius: 0;
+      }
+      .nav-menu ul { flex-direction: row; gap: 0.25rem 0.75rem; align-items: center; }
+      .nav-menu ul li a { padding: 0.5rem 0.75rem; color: #0d0d0d; border-radius: 30px; }
+      .nav-menu ul li a.active { background: #0285ff; color: #fff; }
+      header { flex-wrap: nowrap; }
+      .works h1 { flex: 1 0 160px; max-width: 260px; }
+      .cources a, .courceses a { width: 170px; min-height: 130px; font-size: 1rem; flex: 0 1 170px; }
+      .howwork h2 { flex: 1 0 200px; max-width: 280px; font-size: 1.05rem; }
+      .product-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+      .contact-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    }
+    @media (min-width: 1024px) {
+      .hero-image { max-height: 320px; }
+      .cources a, .courceses a { width: 190px; min-height: 150px; font-size: 1.05rem; }
+      .howwork h2 { min-height: 180px; font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== TECH BACKGROUND DECORATIONS ===== -->
+<div class="tech-bg">
+  <div class="circuit"></div>
+  <div class="circuit"></div>
+  <div class="circuit"></div>
+  <div class="circuit"></div>
+  <div class="circuit"></div>
+  <div class="dot-grid">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+</div>
+
+<div class="floating-icons">
+  <span class="icon">⚛️</span>
+  <span class="icon">💻</span>
+  <span class="icon">🖥️</span>
+  <span class="icon">📱</span>
+  <span class="icon">🤖</span>
+  <span class="icon">🌐</span>
+  <span class="icon">🔧</span>
+  <span class="icon">⚡</span>
+</div>
+
+<!-- ===== AUTH OVERLAY (blocks everything until login/register) ===== -->
+<div id="authOverlay">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <span class="logo-icon">🚀</span>
+      <h1>Teshe Tech</h1>
+      <p>Learn · Build · Innovate</p>
+    </div>
+    <h1 id="overlayTitle">🔐 Login</h1>
+    <p class="sub" id="overlaySub">Sign in to access Teshe Tech</p>
+    <div class="auth-error" id="overlayError"></div>
+    <label for="overlayEmail">Email</label>
+    <input type="email" id="overlayEmail" placeholder="you@example.com" autocomplete="email">
+    <label for="overlayPassword">Password</label>
+    <input type="password" id="overlayPassword" placeholder="••••••••" autocomplete="current-password">
+    <span id="forgotLink">Forgot Password?</span>
+    <button class="auth-btn" id="overlayAuthBtn">Login</button>
+    <div class="toggle-link">
+      <span id="overlayToggleText">Don't have an account?</span>
+      <a id="overlayToggleLink">Register</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DEPOSIT MODAL ===== -->
+<div class="deposit-modal" id="depositModal">
+  <div class="modal-box">
+    <h3>💰 Complete Payment</h3>
+    <p class="modal-sub" id="modalSub">Pay to any account below and enter the transaction ID</p>
+    <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:0.8rem;margin-bottom:1rem;">
+      <div style="font-size:0.85rem;color:rgba(255,255,255,0.5);">CBE: <span style="color:#fff;font-weight:600;">1000676405058</span></div>
+      <div style="font-size:0.85rem;color:rgba(255,255,255,0.5);">BOA: <span style="color:#fff;font-weight:600;">189018436</span></div>
+      <div style="font-size:0.85rem;color:rgba(255,255,255,0.5);">TeleBirr: <span style="color:#fff;font-weight:600;">0928151586</span></div>
+      <div style="font-size:0.8rem;color:rgba(255,255,255,0.3);margin-top:0.3rem;">Name: <span style="color:#fff;">Teshome Ayenew</span></div>
+    </div>
+    <label for="depositAmount">Amount (Birr)</label>
+    <input type="number" id="depositAmount" placeholder="0.00" step="0.01" min="0.01">
+    <label for="depositTxn">Transaction ID</label>
+    <input type="text" id="depositTxn" placeholder="Enter your transaction ID">
+    <div class="modal-actions">
+      <button class="btn-confirm" id="modalConfirm">Confirm Payment</button>
+      <button class="btn-cancel" id="modalCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="logo-area">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiPgogIDxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMDA3YWZmIiByeD0iMTUiLz4KICA8dGV4dCB4PSI1MCIgeT0iNjAiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+VGVzaGUnczwvdGV4dD4KICA8dGV4dCB4PSI1MCIgeT0iODUiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiNmZmZmMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIj5UZWNoPC90ZXh0Pgo8L3N2Zz4K" alt="Teshe Tech Logo">
+    <span>Teshe's <span style="color:#0285ff;">Tech</span></span>
+  </div>
+  <button class="nav-toggle" id="navToggle">☰</button>
+  <nav class="nav-menu" id="navMenu">
+    <ul>
+      <li><a href="#home" class="active" data-page="home">Home</a></li>
+      <li><a href="#buy" data-page="buy">Buy Products</a></li>
+      <li><a href="#order" data-page="order">Order</a></li>
+      <li><a href="#learning" data-page="learning">Learning</a></li>
+      <li><a href="#invite" data-page="invite">Invite</a></li>
+      <li id="adminNavItem" style="display:none;"><a href="#admin" data-page="admin">Admin <span class="admin-badge">Admin</span></a></li>
+      <li><a href="#about" data-page="about">About</a></li>
+      <li><a href="#contact" data-page="contact">Contact</a></li>
+      <li><button id="logoutBtn" onclick="logout()">Logout</button></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main>
+
+  <!-- HOME -->
+  <div id="page-home" class="product-page active">
+    <h1 class="hero-title">Welcome To <span>Teshe's Tech</span></h1>
+    <img class="hero-image" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMjUwIiB2aWV3Qm94PSIwIDAgODAwIDI1MCI+CiAgPHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSIyNTAiIGZpbGw9IiMxYTFhM2UiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjEyMCIgZm9udC1zaXplPSIzNCIgZmlsbD0iI2ZmZmZmMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TGVhcm4sIEJ1aWxkLCBCdXk8L3RleHQ+CiAgPHRleHQgeD0iNDAwIiB5PSIxNzAiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiNhYWEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlRlc2hlIFRlY2ggLSBDb2RlLCBDcmVhdGUsIElubm92YXRlPC90ZXh0Pgo8L3N2Zz4K" alt="Learn Build Buy">
+    <p class="tagline">Learn, Build, Buy</p>
+    <div class="works">
+      <h1 id="startlearn">🚀 START LEARNING</h1>
+      <h1 id="buyproduct">🛒 BUY PRODUCTS</h1>
+      <h1 id="orderproducts">📦 ORDER PRODUCTS</h1>
+    </div>
+    <h2 class="section-head">⭐ POPULAR COURSES</h2>
+    <div class="cources" id="courseGrid"></div>
+
+    <!-- PAYMENT INFO (hidden by default, shown only during deposits) -->
+    <div class="payment-info" id="paymentInfoHome">
+      <h3>💳 Pay to Unlock Courses</h3>
+      <p style="color:rgba(255,255,255,0.6); margin-bottom:0.5rem;">Send payment to any of these accounts with your <strong style="color:#fff;">unique transaction ID</strong>:</p>
+      <div class="account"><span class="label">CBE:</span> <span class="value">1000676405058</span></div>
+      <div class="account"><span class="label">BOA:</span> <span class="value">189018436</span></div>
+      <div class="account"><span class="label">TeleBirr:</span> <span class="value">0928151586</span></div>
+      <div style="margin-top:0.5rem; font-size:0.9rem; color:rgba(255,255,255,0.3);">Name: <strong style="color:#fff;">Teshome Ayenew</strong></div>
+    </div>
+
+    <h2 class="section-head">⚙️ HOW IT WORKS</h2>
+    <div class="howwork">
+      <h2 id="learn">📚 LEARN <br><span>Choose a course → Deposit → Get admission → Learn</span></h2>
+      <h2 id="buyproduct">🛒 BUY PRODUCTS <br><span>Browse products → Choose → Pay with transaction ID</span></h2>
+      <h2 id="order">📦 ORDER <br><span>Request product with description → Contact devs → Receive</span></h2>
+    </div>
+    <div class="service">
+      <a id="learning" href="#learning">📘 Learning</a>
+      <a id="buyproduct" href="#buy">🛒 Buy Products</a>
+      <a id="order" href="#order">📦 Order Products</a>
+    </div>
+    <h2 class="section-head">🧩 TECH STACK</h2>
+    <div class="courceses" id="techStackGrid"></div>
+  </div>
+
+  <!-- COURSE DETAIL VIEW -->
+  <div id="page-course-detail" class="course-detail">
+    <button class="back-btn" onclick="closeCourseDetail()">← Back to Courses</button>
+    <div class="course-header">
+      <h2 id="courseDetailTitle">Course Title</h2>
+      <p id="courseDetailDesc">Course description</p>
+    </div>
+    <div class="course-video-grid" id="courseVideoGrid"></div>
+  </div>
+
+  <!-- BUY PRODUCTS -->
+  <div id="page-buy" class="product-page">
+    <h2>🛒 Buy Products</h2>
+    <p class="subtitle">Browse our products and pay with transaction ID</p>
+    <div class="payment-info" id="paymentInfoBuy">
+      <h3>💳 Payment Accounts</h3>
+      <div class="account"><span class="label">CBE:</span> <span class="value">1000676405058</span></div>
+      <div class="account"><span class="label">BOA:</span> <span class="value">189018436</span></div>
+      <div class="account"><span class="label">TeleBirr:</span> <span class="value">0928151586</span></div>
+      <div style="margin-top:0.5rem; font-size:0.9rem; color:rgba(255,255,255,0.3);">Name: <strong style="color:#fff;">Teshome Ayenew</strong></div>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+  </div>
+
+  <!-- ORDER PRODUCTS -->
+  <div id="page-order" class="product-page">
+    <h2>📦 Order a Custom Product</h2>
+    <p class="subtitle">Describe what you need and we'll build it for you</p>
+    <div class="payment-info" id="paymentInfoOrder">
+      <h3>💳 Payment Accounts</h3>
+      <div class="account"><span class="label">CBE:</span> <span class="value">1000676405058</span></div>
+      <div class="account"><span class="label">BOA:</span> <span class="value">189018436</span></div>
+      <div class="account"><span class="label">TeleBirr:</span> <span class="value">0928151586</span></div>
+      <div style="margin-top:0.5rem; font-size:0.9rem; color:rgba(255,255,255,0.3);">Name: <strong style="color:#fff;">Teshome Ayenew</strong></div>
+    </div>
+    <div class="order-form">
+      <label for="orderName">Your Name</label>
+      <input type="text" id="orderName" placeholder="e.g. Teshome Ayenew">
+      <label for="orderEmail">Your Email</label>
+      <input type="email" id="orderEmail" placeholder="you@example.com">
+      <label for="orderProduct">Product Description</label>
+      <textarea id="orderProduct" placeholder="Describe your custom product or project in detail..."></textarea>
+      <button class="btn-submit" id="submitOrder">Submit Order Request</button>
+    </div>
+    <p style="text-align:center; color:rgba(255,255,255,0.3); font-size:0.9rem;">We'll contact you within 24 hours with a quote.</p>
+  </div>
+
+  <!-- INVITE PAGE -->
+  <div id="page-invite" class="product-page">
+    <h2>🎉 Invite Friends</h2>
+    <p class="subtitle">Invite 4 friends and get a <strong style="color:#facc15;">FREE COURSE UNLOCK</strong>!</p>
+    <div style="max-width:600px;margin:2rem auto;background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);border-radius:20px;padding:2rem;border:1px solid rgba(0,255,255,0.1);text-align:center;">
+      <p style="color:rgba(255,255,255,0.5);margin-bottom:1rem;">Your unique referral link:</p>
+      <div style="background:rgba(0,0,0,0.2);padding:0.8rem 1rem;border-radius:12px;word-break:break-all;font-size:0.9rem;color:#fff;border:1px solid rgba(255,255,255,0.05);" id="referralLink">Loading...</div>
+      <button onclick="copyReferralLink()" style="margin-top:1rem;padding:0.7rem 2rem;border-radius:30px;border:none;background:linear-gradient(135deg,#facc15,#f5b800);color:#0d0d0d;font-weight:700;cursor:pointer;">Copy Link</button>
+      <div style="margin-top:1.5rem;padding:1rem;background:rgba(255,255,255,0.03);border-radius:12px;">
+        <p style="color:rgba(255,255,255,0.5);font-size:0.95rem;">Your referral progress:</p>
+        <div style="display:flex;justify-content:center;gap:0.5rem;margin:0.8rem 0;">
+          <span id="referralCount" style="font-size:1.5rem;font-weight:700;color:#facc15;">0</span>
+          <span style="color:rgba(255,255,255,0.3);">/ 4 invites</span>
+        </div>
+        <div style="width:100%;height:8px;background:rgba(255,255,255,0.05);border-radius:10px;overflow:hidden;">
+          <div id="referralProgress" style="height:100%;background:linear-gradient(90deg,#facc15,#f5b800);width:0%;transition:width 0.5s ease;border-radius:10px;"></div>
+        </div>
+        <p id="referralGiftStatus" style="margin-top:0.8rem;color:rgba(255,255,255,0.3);font-size:0.9rem;"></p>
+      </div>
+      <div id="freeUnlockSection" style="display:none;margin-top:1rem;padding:1rem;background:rgba(40,167,69,0.1);border-radius:12px;border:2px solid #28a745;">
+        <p style="color:#28a745;font-weight:700;">🎁 You have a free unlock!</p>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">Click any locked course below to unlock it for free.</p>
+        <button onclick="useFreeUnlock()" style="margin-top:0.5rem;padding:0.6rem 1.5rem;border-radius:30px;border:none;background:#28a745;color:#fff;font-weight:700;cursor:pointer;">Use Free Unlock</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="page-admin" class="admin-panel">
+    <h2>👑 Admin Panel</h2>
+    <p class="sub">Manage users, courses, videos, products, messages, deposits & referrals</p>
+    <div class="admin-tabs">
+      <button class="active" data-tab="users">👥 Users</button>
+      <button data-tab="courses">📚 Courses</button>
+      <button data-tab="videos">🎥 Videos</button>
+      <button data-tab="products">🛒 Products</button>
+      <button data-tab="messages">💬 Messages</button>
+      <button data-tab="deposits">💰 Deposits</button>
+      <button data-tab="referrals">🔗 Referrals</button>
+    </div>
+
+    <div class="admin-tab-content active" id="tab-users">
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="userTable">
+          <thead><tr><th>Email</th><th>Password</th><th>Status</th><th>Referral Code</th><th>Invites</th><th>Actions</th></tr></thead>
+          <tbody id="userTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-tab-content" id="tab-courses">
+      <div style="margin-bottom:1rem; background:rgba(255,255,255,0.03); padding:1rem; border-radius:16px;">
+        <h4 style="color:#facc15; margin-bottom:0.5rem;">Add New Course</h4>
+        <div class="admin-form-group">
+          <input type="text" id="newCourseName" placeholder="Course Name" style="flex:2; min-width:150px;">
+          <input type="text" id="newCoursePrice" placeholder="Price (Birr)" style="width:120px;">
+          <select id="newCourseType" style="flex:1; min-width:130px;">
+            <option value="free">🆓 Free</option>
+            <option value="sample">📖 Sample</option>
+            <option value="locked">🔒 Locked</option>
+          </select>
+        </div>
+        <div class="admin-form-group" id="categoryGroup" style="display:none;">
+          <select id="newCourseCategory" style="flex:1; min-width:150px;">
+            <option value="">Select Category</option>
+            <option value="fullstack">Full-Stack Development</option>
+            <option value="database">Database & SQL</option>
+            <option value="cyber">Cyber Security</option>
+            <option value="ai">AI & Machine Learning</option>
+            <option value="mobile">Mobile Development</option>
+            <option value="devops">DevOps</option>
+          </select>
+          <select id="newCourseSubCategory" style="flex:2; min-width:150px;">
+            <option value="">Select Sub-Category</option>
+          </select>
+        </div>
+        <button id="addCourseBtn" style="padding:0.5rem 1.5rem; border-radius:30px; border:none; background:linear-gradient(135deg,#facc15,#f5b800); color:#0d0d0d; font-weight:600; cursor:pointer; margin-top:0.3rem;">Add Course</button>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="courseTable">
+          <thead><tr><th>Course</th><th>Price</th><th>Type</th><th>Category</th><th>Videos</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="courseTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-tab-content" id="tab-videos">
+      <div style="margin-bottom:1rem; background:rgba(255,255,255,0.03); padding:1rem; border-radius:16px;">
+        <h4 style="color:#facc15; margin-bottom:0.5rem;">Upload Video to Course</h4>
+        <div class="admin-form-group">
+          <select id="videoCourseSelect" style="flex:2; min-width:200px;">
+            <option value="">Select Course</option>
+          </select>
+          <input type="text" id="newVideoTitle" placeholder="Video Title" style="flex:2; min-width:150px;">
+        </div>
+        <div class="upload-area" id="videoUploadArea">
+          <p style="color:rgba(255,255,255,0.5);font-size:0.95rem;">📤 Drag & drop video files here or click to browse</p>
+          <p style="color:rgba(255,255,255,0.2);font-size:0.8rem;margin-top:0.3rem;">Supports: MP4, WebM, AVI, MOV, and YouTube URLs</p>
+          <input type="file" id="videoFileInput" accept="video/*,.mp4,.webm,.avi,.mov">
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;">
+          <input type="text" id="newVideoUrl" placeholder="Or enter YouTube URL" style="flex:1; min-width:200px; padding:0.5rem; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff;">
+          <button id="addVideoBtn" style="padding:0.5rem 1.2rem; border-radius:30px; border:none; background:linear-gradient(135deg,#facc15,#f5b800); color:#0d0d0d; font-weight:600; cursor:pointer;">Upload Video</button>
+        </div>
+      </div>
+      <div id="videoAdminList"></div>
+    </div>
+
+    <div class="admin-tab-content" id="tab-products">
+      <div style="margin-bottom:1rem; background:rgba(255,255,255,0.03); padding:1rem; border-radius:16px;">
+        <h4 style="color:#facc15; margin-bottom:0.5rem;">Manage Products & Prices</h4>
+        <div class="admin-form-group">
+          <input type="text" id="newProductName" placeholder="Product Name" style="flex:2; min-width:150px;">
+          <input type="text" id="newProductPrice" placeholder="Price (Birr)" style="width:120px;">
+          <input type="text" id="newProductDesc" placeholder="Description" style="flex:2; min-width:150px;">
+          <button id="addProductBtn" style="padding:0.5rem 1.2rem; border-radius:30px; border:none; background:linear-gradient(135deg,#facc15,#f5b800); color:#0d0d0d; font-weight:600; cursor:pointer;">Add Product</button>
+        </div>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="productTable">
+          <thead><tr><th>Product</th><th>Price</th><th>Description</th><th>Actions</th></tr></thead>
+          <tbody id="productTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-tab-content" id="tab-messages">
+      <div style="margin-bottom:1rem; background:rgba(255,255,255,0.03); padding:1rem; border-radius:16px;">
+        <h4 style="color:#facc15; margin-bottom:0.5rem;">Order Management</h4>
+        <div class="admin-form-group">
+          <input type="text" id="orderPriceInput" placeholder="New Order Price (Birr)" style="width:150px;">
+          <button onclick="updateOrderPrice()" style="padding:0.5rem 1.2rem; border-radius:30px; border:none; background:linear-gradient(135deg,#facc15,#f5b800); color:#0d0d0d; font-weight:600; cursor:pointer;">Update Order Price</button>
+        </div>
+        <p style="color:rgba(255,255,255,0.3);font-size:0.9rem;">Current order price: <span id="currentOrderPrice" style="color:#facc15;font-weight:700;">Custom</span></p>
+      </div>
+      <div id="messageList"><p style="color:rgba(255,255,255,0.3); text-align:center;">No messages yet.</p></div>
+    </div>
+
+    <div class="admin-tab-content" id="tab-deposits">
+      <div id="depositList"><p style="color:rgba(255,255,255,0.3); text-align:center;">No deposit requests yet.</p></div>
+    </div>
+
+    <div class="admin-tab-content" id="tab-referrals">
+      <div id="referralList"><p style="color:rgba(255,255,255,0.3); text-align:center;">No referrals yet.</p></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div id="page-about" class="product-page">
+    <h2>👤 About Me</h2>
+    <p style="text-align:center; max-width:600px; margin:1rem auto; color:rgba(255,255,255,0.6);">
+      Teshome Ayenew — passionate developer and educator. Building Teshe Tech to help people learn, build, and buy technology solutions.
+    </p>
+  </div>
+
+  <!-- CONTACT -->
+  <div id="page-contact" class="product-page">
+    <h2>📬 Contact Us</h2>
+    <p class="subtitle">Connect with us through any of the following platforms</p>
+    <div class="contact-grid">
+      <a href="https://youtube.com/@teshomeayenew-z4t?si=nlUH0PfZ6SENhLFS" target="_blank" class="contact-card">
+        <div class="contact-icon">▶️</div>
+        <div class="contact-name">YouTube</div>
+        <div class="contact-detail">@teshomeayenew-z4t</div>
+      </a>
+      <a href="https://www.tiktok.com/@_teshe?_r=1&_t=ZS-993yOkyanA1" target="_blank" class="contact-card">
+        <div class="contact-icon">🎵</div>
+        <div class="contact-name">TikTok</div>
+        <div class="contact-detail">@_teshe</div>
+      </a>
+      <a href="https://www.facebook.com/share/1W4QqjmWh3/" target="_blank" class="contact-card">
+        <div class="contact-icon">📘</div>
+        <div class="contact-name">Facebook</div>
+        <div class="contact-detail">Teshe Tech</div>
+      </a>
+      <a href="https://wa.me/251928151586" target="_blank" class="contact-card">
+        <div class="contact-icon">💬</div>
+        <div class="contact-name">WhatsApp</div>
+        <div class="contact-detail">0928151586</div>
+      </a>
+      <a href="mailto:teshomeayenew5@gmail.com" class="contact-card">
+        <div class="contact-icon">✉️</div>
+        <div class="contact-name">Email</div>
+        <div class="contact-detail">teshomeayenew5@gmail.com</div>
+      </a>
+      <a href="tel:+251928151586" class="contact-card">
+        <div class="contact-icon">📞</div>
+        <div class="contact-name">Call</div>
+        <div class="contact-detail">0928151586</div>
+      </a>
+      <a href="https://github.com/teshe-hard#:~:text=Teshe%20Dev,-teshe%2Dhard" target="_blank" class="contact-card">
+        <div class="contact-icon">🐙</div>
+        <div class="contact-name">GitHub</div>
+        <div class="contact-detail">teshe-hard</div>
+      </a>
+    </div>
+    <p style="text-align:center; color:rgba(255,255,255,0.3); font-size:0.9rem; margin-top:1rem;">
+      We'll get back to you within 24 hours.
+    </p>
+  </div>
+
+  <div class="footer"><p>&copy; 2026 Teshe Tech — Code. Create. Innovate.</p></div>
+</main>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+  (function() {
+    // ----- STATE -----
+    let users = {};
+    let messages = [];
+    let deposits = [];
+    let courses = [];
+    let products = [];
+    let videos = [];
+    let referrals = {};
+    let messageIdCounter = 0;
+    let depositIdCounter = 0;
+    let courseIdCounter = 0;
+    let productIdCounter = 0;
+    let videoIdCounter = 0;
+    let currentUser = null;
+    let isOverlayLogin = true;
+    let pendingDeposit = null;
+    const ADMIN_RESET_CODE = '1005';
+    const REFERRAL_GOAL = 4;
+    let orderPrice = null;
+
+    // Sub-category mapping
+    const subCategories = {
+      fullstack: ['HTML', 'CSS', 'JavaScript', 'Node.js', 'Express', 'API Development', 'React', 'Angular', 'Vue.js', 'MongoDB', 'PostgreSQL'],
+      database: ['SQL Basics', 'Advanced SQL', 'Database Design', 'NoSQL', 'MongoDB', 'PostgreSQL', 'Oracle', 'MySQL'],
+      cyber: ['Network Security', 'Ethical Hacking', 'Cryptography', 'Security Auditing', 'Penetration Testing', 'Risk Management'],
+      ai: ['Machine Learning', 'Deep Learning', 'Natural Language Processing', 'Computer Vision', 'Data Science', 'Python for AI'],
+      mobile: ['Android Development', 'iOS Development', 'React Native', 'Flutter', 'Mobile UI/UX', 'Cross-platform'],
+      devops: ['Docker', 'Kubernetes', 'CI/CD', 'Cloud Computing', 'AWS', 'Azure', 'Linux Administration']
+    };
+
+    // ----- DOM REFS -----
+    const overlay = document.getElementById('authOverlay');
+    const overlayEmail = document.getElementById('overlayEmail');
+    const overlayPassword = document.getElementById('overlayPassword');
+    const overlayAuthBtn = document.getElementById('overlayAuthBtn');
+    const overlayTitle = document.getElementById('overlayTitle');
+    const overlaySub = document.getElementById('overlaySub');
+    const overlayError = document.getElementById('overlayError');
+    const overlayToggleLink = document.getElementById('overlayToggleLink');
+    const overlayToggleText = document.getElementById('overlayToggleText');
+    const forgotLink = document.getElementById('forgotLink');
+
+    const depositModal = document.getElementById('depositModal');
+    const depositAmount = document.getElementById('depositAmount');
+    const depositTxn = document.getElementById('depositTxn');
+    const modalSub = document.getElementById('modalSub');
+    const modalConfirm = document.getElementById('modalConfirm');
+    const modalCancel = document.getElementById('modalCancel');
+
+    const toast = document.getElementById('toast');
+    let toastTimeout = null;
+
+    const userTableBody = document.getElementById('userTableBody');
+    const courseTableBody = document.getElementById('courseTableBody');
+    const productTableBody = document.getElementById('productTableBody');
+    const messageList = document.getElementById('messageList');
+    const depositList = document.getElementById('depositList');
+    const productGrid = document.getElementById('productGrid');
+    const videoAdminList = document.getElementById('videoAdminList');
+    const referralList = document.getElementById('referralList');
+    const referralLink = document.getElementById('referralLink');
+    const referralCount = document.getElementById('referralCount');
+    const referralProgress = document.getElementById('referralProgress');
+    const referralGiftStatus = document.getElementById('referralGiftStatus');
+    const freeUnlockSection = document.getElementById('freeUnlockSection');
+    const adminNavItem = document.getElementById('adminNavItem');
+    const courseGrid = document.getElementById('courseGrid');
+    const techStackGrid = document.getElementById('techStackGrid');
+    const videoUploadArea = document.getElementById('videoUploadArea');
+    const videoFileInput = document.getElementById('videoFileInput');
+    const categoryGroup = document.getElementById('categoryGroup');
+    const newCourseCategory = document.getElementById('newCourseCategory');
+    const newCourseSubCategory = document.getElementById('newCourseSubCategory');
+    const videoCourseSelect = document.getElementById('videoCourseSelect');
+    const courseDetailPage = document.getElementById('page-course-detail');
+    const courseDetailTitle = document.getElementById('courseDetailTitle');
+    const courseDetailDesc = document.getElementById('courseDetailDesc');
+    const courseVideoGrid = document.getElementById('courseVideoGrid');
+    const currentOrderPrice = document.getElementById('currentOrderPrice');
+
+    const paymentInfoHome = document.getElementById('paymentInfoHome');
+    const paymentInfoBuy = document.getElementById('paymentInfoBuy');
+    const paymentInfoOrder = document.getElementById('paymentInfoOrder');
+
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    const navLinks = document.querySelectorAll('.nav-menu ul li a');
+
+    const pages = {
+      home: document.getElementById('page-home'),
+      buy: document.getElementById('page-buy'),
+      order: document.getElementById('page-order'),
+      learning: document.getElementById('page-home'),
+      invite: document.getElementById('page-invite'),
+      admin: document.getElementById('page-admin'),
+      about: document.getElementById('page-about'),
+      contact: document.getElementById('page-contact'),
+      courseDetail: document.getElementById('page-course-detail')
+    };
+
+    // ----- HELPERS -----
+    function showToast(msg) {
+      if (toastTimeout) { clearTimeout(toastTimeout); toast.classList.remove('show'); }
+      void toast.offsetWidth;
+      toast.textContent = msg;
+      toast.classList.add('show');
+      toastTimeout = setTimeout(() => { toast.classList.remove('show'); toastTimeout = null; }, 3000);
+    }
+
+    function setOverlayError(msg) { overlayError.textContent = msg; }
+    function clearOverlayError() { overlayError.textContent = ''; }
+    function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+    function validatePassword(pw) { return pw.length >= 6; }
+
+    function isAdmin() {
+      return currentUser === 'teshomeayenew883@gmail.com';
+    }
+
+    function generateReferralCode(email) {
+      return 'REF-' + email.split('@')[0].toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+    }
+
+    function getReferralLink(email) {
+      const code = users[email]?.referralCode || generateReferralCode(email);
+      if (users[email]) users[email].referralCode = code;
+      return window.location.origin + window.location.pathname + '?ref=' + code;
+    }
+
+    function hideAllPaymentInfo() {
+      [paymentInfoHome, paymentInfoBuy, paymentInfoOrder].forEach(el => {
+        if (el) el.classList.remove('visible');
+      });
+    }
+
+    function showPaymentInfo(page) {
+      hideAllPaymentInfo();
+      if (page === 'home' && paymentInfoHome) paymentInfoHome.classList.add('visible');
+      else if (page === 'buy' && paymentInfoBuy) paymentInfoBuy.classList.add('visible');
+      else if (page === 'order' && paymentInfoOrder) paymentInfoOrder.classList.add('visible');
+    }
+
+    function getCourseTypeLabel(type) {
+      const labels = { locked: '🔒 Locked', free: '🆓 Free', sample: '📖 Sample' };
+      return labels[type] || 'Locked';
+    }
+
+    function getVideoTypeLabel(type) {
+      const labels = { locked: '🔒 Course Video', free: '🆓 Free Video', sample: '📖 Sample Video' };
+      return labels[type] || 'Video';
+    }
+
+    function getUserReferralCount(email) {
+      if (!users[email]) return 0;
+      return users[email].referrals ? users[email].referrals.length : 0;
+    }
+
+    function checkReferralProgress(email) {
+      if (!users[email]) return;
+      const count = getUserReferralCount(email);
+      if (count >= REFERRAL_GOAL && !users[email].freeUnlock) {
+        users[email].freeUnlock = true;
+        showToast('🎉 Congratulations! You earned a FREE course unlock!');
+        saveState();
+      }
+      updateReferralUI(email);
+    }
+
+    function updateReferralUI(email) {
+      if (!email || !referralCount) return;
+      const count = getUserReferralCount(email);
+      referralCount.textContent = count;
+      const progress = Math.min((count / REFERRAL_GOAL) * 100, 100);
+      referralProgress.style.width = progress + '%';
+      
+      if (count >= REFERRAL_GOAL) {
+        referralGiftStatus.textContent = '✅ You have earned a FREE course unlock!';
+        referralGiftStatus.style.color = '#28a745';
+        freeUnlockSection.style.display = 'block';
+      } else {
+        referralGiftStatus.textContent = `Invite ${REFERRAL_GOAL - count} more friend${REFERRAL_GOAL - count > 1 ? 's' : ''} to get a free course unlock!`;
+        referralGiftStatus.style.color = 'rgba(255,255,255,0.3)';
+        freeUnlockSection.style.display = 'none';
+      }
+    }
+
+    function useFreeUnlock() {
+      if (!currentUser) { showToast('⚠️ Please login first.'); return; }
+      if (!users[currentUser] || !users[currentUser].freeUnlock) {
+        showToast('⚠️ You don\'t have a free unlock available.');
+        return;
+      }
+      const lockedCourses = courses.filter(c => c.type === 'locked' && c.locked);
+      if (lockedCourses.length === 0) {
+        showToast('⚠️ No locked courses available to unlock.');
+        return;
+      }
+      const courseNames = lockedCourses.map((c, i) => `${i+1}. ${c.name} (${c.category || 'General'})`).join('\n');
+      const choice = prompt(`Choose a course to unlock for free:\n${courseNames}`);
+      if (choice === null) return;
+      const idx = parseInt(choice) - 1;
+      if (isNaN(idx) || idx < 0 || idx >= lockedCourses.length) {
+        showToast('❌ Invalid choice.');
+        return;
+      }
+      const selected = lockedCourses[idx];
+      selected.locked = false;
+      users[currentUser].freeUnlock = false;
+      if (!users[currentUser].unlockedCourses) users[currentUser].unlockedCourses = [];
+      users[currentUser].unlockedCourses.push(selected.name);
+      showToast(`🎉 "${selected.name}" unlocked for free!`);
+      renderCourses();
+      renderAdminTables();
+      updateReferralUI(currentUser);
+      saveState();
+    }
+
+    // ----- AUTH OVERLAY -----
+    function toggleOverlayMode() {
+      isOverlayLogin = !isOverlayLogin;
+      if (isOverlayLogin) {
+        overlayTitle.textContent = '🔐 Login';
+        overlaySub.textContent = 'Sign in to access Teshe Tech';
+        overlayAuthBtn.textContent = 'Login';
+        overlayToggleLink.textContent = 'Register';
+        overlayToggleText.textContent = "Don't have an account?";
+        overlayAuthBtn.className = 'auth-btn';
+        forgotLink.style.display = 'block';
+      } else {
+        overlayTitle.textContent = '📝 Register';
+        overlaySub.textContent = 'Create your account';
+        overlayAuthBtn.textContent = 'Register';
+        overlayToggleLink.textContent = 'Login';
+        overlayToggleText.textContent = 'Already have an account?';
+        overlayAuthBtn.className = 'auth-btn secondary';
+        forgotLink.style.display = 'none';
+      }
+      clearOverlayError();
+      overlayEmail.value = '';
+      overlayPassword.value = '';
+    }
+
+    function handleOverlayAuth() {
+      const email = overlayEmail.value.trim();
+      const password = overlayPassword.value.trim();
+      clearOverlayError();
+      if (!email || !password) { setOverlayError('Please fill in all fields.'); return; }
+      if (!validateEmail(email)) { setOverlayError('Please enter a valid email address.'); return; }
+      if (!validatePassword(password)) { setOverlayError('Password must be at least 6 characters.'); return; }
+
+      if (isOverlayLogin) {
+        if (users[email]) {
+          if (users[email].status === 'banned') { setOverlayError('❌ This account has been banned.'); return; }
+          if (users[email].password === password) {
+            currentUser = email;
+            overlay.classList.add('hidden');
+            showToast(`✅ Welcome back, ${email}!`);
+            overlayEmail.value = ''; overlayPassword.value = '';
+            updateAdminVisibility();
+            renderAdminTables();
+            renderProducts();
+            renderCourses();
+            updateReferralLink();
+            updateReferralUI(email);
+            hideAllPaymentInfo();
+            saveState();
+          } else { setOverlayError('❌ Incorrect password.'); }
+        } else { setOverlayError('❌ No account found. Please register.'); }
+      } else {
+        if (users[email]) { setOverlayError('❌ Account already exists. Please login.'); return; }
+        users[email] = { 
+          password, 
+          status: 'active', 
+          referralCode: generateReferralCode(email), 
+          referrals: [],
+          freeUnlock: false,
+          unlockedCourses: []
+        };
+        currentUser = email;
+        overlay.classList.add('hidden');
+        showToast(`✅ Registration successful! Welcome, ${email}`);
+        overlayEmail.value = ''; overlayPassword.value = '';
+        updateAdminVisibility();
+        renderAdminTables();
+        renderProducts();
+        renderCourses();
+        updateReferralLink();
+        updateReferralUI(email);
+        hideAllPaymentInfo();
+        saveState();
+      }
+    }
+
+    // ----- SAVE / LOAD STATE -----
+    function saveState() {
+      try {
+        const state = { users, messages, deposits, courses, products, videos, referrals, messageIdCounter, depositIdCounter, courseIdCounter, productIdCounter, videoIdCounter, orderPrice };
+        localStorage.setItem('tesheTechState', JSON.stringify(state));
+      } catch (e) { console.warn('Save failed:', e); }
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('tesheTechState');
+        if (saved) {
+          const state = JSON.parse(saved);
+          users = state.users || {};
+          messages = state.messages || [];
+          deposits = state.deposits || [];
+          courses = state.courses || [];
+          products = state.products || [];
+          videos = state.videos || [];
+          referrals = state.referrals || {};
+          messageIdCounter = state.messageIdCounter || 0;
+          depositIdCounter = state.depositIdCounter || 0;
+          courseIdCounter = state.courseIdCounter || 0;
+          productIdCounter = state.productIdCounter || 0;
+          videoIdCounter = state.videoIdCounter || 0;
+          orderPrice = state.orderPrice || null;
+          return true;
+        }
+      } catch (e) { console.warn('Load failed:', e); }
+      return false;
+    }
+
+    // ----- FORGOT PASSWORD -----
+    forgotLink.addEventListener('click', function() {
+      const email = overlayEmail.value.trim();
+      if (!email || !validateEmail(email)) {
+        setOverlayError('Please enter a valid email address to reset password.');
+        return;
+      }
+      if (!users[email]) {
+        setOverlayError('No account found with this email.');
+        return;
+      }
+      if (email === 'teshomeayenew883@gmail.com') {
+        const code = prompt('Enter admin reset code:');
+        if (code !== ADMIN_RESET_CODE) {
+          setOverlayError('❌ Invalid reset code. Contact admin.');
+          return;
+        }
+      }
+      const newPw = 'reset' + Math.random().toString(36).substring(2, 8);
+      users[email].password = newPw;
+      showToast(`✅ Password reset for ${email} to: ${newPw}`);
+      setOverlayError('');
+      saveState();
+    });
+
+    // ----- LOGOUT -----
+    window.logout = function() {
+      currentUser = null;
+      overlay.classList.remove('hidden');
+      isOverlayLogin = true;
+      overlayTitle.textContent = '🔐 Login';
+      overlaySub.textContent = 'Sign in to access Teshe Tech';
+      overlayAuthBtn.textContent = 'Login';
+      overlayToggleLink.textContent = 'Register';
+      overlayToggleText.textContent = "Don't have an account?";
+      overlayAuthBtn.className = 'auth-btn';
+      forgotLink.style.display = 'block';
+      clearOverlayError();
+      overlayEmail.value = '';
+      overlayPassword.value = '';
+      updateAdminVisibility();
+      hideAllPaymentInfo();
+      showToast('👋 Logged out successfully.');
+    };
+
+    function updateAdminVisibility() {
+      if (isAdmin()) {
+        adminNavItem.style.display = 'block';
+      } else {
+        adminNavItem.style.display = 'none';
+        if (pages.admin && pages.admin.classList.contains('active')) {
+          navigateTo('home');
+        }
+      }
+    }
+
+    // ----- NAVIGATION -----
+    function navigateTo(pageId) {
+      if (pageId === 'admin' && !isAdmin()) {
+        showToast('⚠️ Admin access only.');
+        return;
+      }
+      Object.values(pages).forEach(p => { if (p) p.classList.remove('active'); });
+      const target = pages[pageId];
+      if (target) target.classList.add('active');
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.dataset.page === pageId) link.classList.add('active');
+      });
+      if (navMenu) navMenu.classList.remove('open');
+      if (navToggle) navToggle.textContent = '☰';
+      if (pageId !== 'home') history.pushState(null, '', '#' + pageId);
+      else history.pushState(null, '', '#home');
+      if (pageId === 'admin') renderAdminTables();
+      if (pageId === 'buy') renderProducts();
+      if (pageId === 'invite') {
+        updateReferralLink();
+        updateReferralUI(currentUser);
+      }
+      hideAllPaymentInfo();
+    }
+
+    // ----- DEPOSIT MODAL -----
+    function showDepositModal(type, name, price, page) {
+      if (!currentUser) { showToast('⚠️ Please login first.'); return; }
+      pendingDeposit = { type, name, price };
+      modalSub.textContent = `Pay ${price} Birr for "${name}" and enter transaction ID`;
+      depositAmount.value = price;
+      depositTxn.value = '';
+      depositModal.classList.add('active');
+      showPaymentInfo(page);
+    }
+
+    function closeDepositModal() {
+      depositModal.classList.remove('active');
+      pendingDeposit = null;
+      depositAmount.value = '';
+      depositTxn.value = '';
+      hideAllPaymentInfo();
+    }
+
+    function confirmDeposit() {
+      if (!pendingDeposit) { showToast('⚠️ No pending deposit.'); return; }
+      const amount = depositAmount.value.trim();
+      const txnId = depositTxn.value.trim();
+      if (!amount || parseFloat(amount) <= 0) { showToast('⚠️ Please enter a valid amount.'); return; }
+      if (!txnId) { showToast('⚠️ Please enter your transaction ID.'); return; }
+
+      deposits.push({
+        id: ++depositIdCounter,
+        email: currentUser,
+        amount: amount,
+        description: `${pendingDeposit.type}: ${pendingDeposit.name}`,
+        status: 'pending',
+        timestamp: Date.now(),
+        transactionId: txnId
+      });
+
+      showToast(`✅ Deposit request for "${pendingDeposit.name}" (${amount} Birr) sent to admin with TXN: ${txnId}`);
+      closeDepositModal();
+      renderAdminTables();
+      saveState();
+    }
+
+    // ----- COURSE UNLOCK -----
+    window.unlockCourse = function(btn) {
+      if (!currentUser) { showToast('⚠️ Please login first.'); return; }
+      const parent = btn.closest('a');
+      if (!parent) return;
+      const courseName = parent.dataset.course;
+      const course = courses.find(c => c.name === courseName);
+      if (!course) { showToast('❌ Course not found.'); return; }
+      
+      if (users[currentUser] && users[currentUser].unlockedCourses && users[currentUser].unlockedCourses.includes(courseName)) {
+        showToast('✅ You already have access to this course!');
+        return;
+      }
+      
+      if (!course.locked) {
+        showToast('✅ This course is already unlocked!');
+        return;
+      }
+      
+      if (users[currentUser] && users[currentUser].freeUnlock) {
+        if (confirm(`You have a free unlock! Do you want to unlock "${course.name}" for free?`)) {
+          course.locked = false;
+          users[currentUser].freeUnlock = false;
+          if (!users[currentUser].unlockedCourses) users[currentUser].unlockedCourses = [];
+          users[currentUser].unlockedCourses.push(courseName);
+          showToast(`🎉 "${course.name}" unlocked for free!`);
+          renderCourses();
+          renderAdminTables();
+          updateReferralUI(currentUser);
+          saveState();
+          return;
+        }
+      }
+      
+      showDepositModal('Course Unlock', courseName, course.price, 'home');
+    };
+
+    // ----- BUY PRODUCT -----
+    window.buyProduct = function(name, price) {
+      if (!currentUser) { showToast('⚠️ Please login first.'); return; }
+      showDepositModal('Product Purchase', name, price, 'buy');
+    };
+
+    // ----- ORDER PRODUCT -----
+    document.getElementById('submitOrder')?.addEventListener('click', function() {
+      if (!currentUser) { showToast('⚠️ Please login first.'); return; }
+      const name = document.getElementById('orderName')?.value.trim() || currentUser;
+      const email = document.getElementById('orderEmail')?.value.trim() || currentUser;
+      const desc = document.getElementById('orderProduct')?.value.trim() || 'No description';
+      if (desc === 'No description') { showToast('⚠️ Please describe your product.'); return; }
+      
+      const price = orderPrice || 'Custom';
+      showDepositModal('Order Request', desc.substring(0, 30) + '...', price, 'order');
+      
+      window._pendingOrder = { name, email, desc };
+    });
+
+    // Override confirm deposit to handle orders
+    const originalConfirm = confirmDeposit;
+    confirmDeposit = function() {
+      if (!pendingDeposit) { showToast('⚠️ No pending deposit.'); return; }
+      const amount = depositAmount.value.trim();
+      const txnId = depositTxn.value.trim();
+      if (!amount || parseFloat(amount) <= 0) { showToast('⚠️ Please enter a valid amount.'); return; }
+      if (!txnId) { showToast('⚠️ Please enter your transaction ID.'); return; }
+
+      deposits.push({
+        id: ++depositIdCounter,
+        email: currentUser,
+        amount: amount,
+        description: pendingDeposit.type === 'Order Request' ? `Order: ${pendingDeposit.name}` : `${pendingDeposit.type}: ${pendingDeposit.name}`,
+        status: 'pending',
+        timestamp: Date.now(),
+        transactionId: txnId
+      });
+
+      if (pendingDeposit.type === 'Order Request' && window._pendingOrder) {
+        messages.push({
+          id: ++messageIdCounter,
+          name: window._pendingOrder.name,
+          email: window._pendingOrder.email,
+          text: window._pendingOrder.desc,
+          timestamp: Date.now(),
+          orderAmount: amount,
+          orderTxn: txnId
+        });
+        showToast(`✅ Order received with payment! We'll contact you within 24h.`);
+        document.getElementById('orderName').value = '';
+        document.getElementById('orderEmail').value = '';
+        document.getElementById('orderProduct').value = '';
+        window._pendingOrder = null;
+      } else {
+        showToast(`✅ Deposit request for "${pendingDeposit.name}" (${amount} Birr) sent to admin with TXN: ${txnId}`);
+      }
+      
+      closeDepositModal();
+      renderAdminTables();
+      saveState();
+    };
+
+    // ----- REFERRAL -----
+    function updateReferralLink() {
+      if (currentUser && referralLink) {
+        referralLink.textContent = getReferralLink(currentUser);
+      }
+    }
+
+    function copyReferralLink() {
+      const link = referralLink.textContent;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(link).then(() => {
+          showToast('📋 Referral link copied!');
+        }).catch(() => {
+          fallbackCopy(link);
+        });
+      } else {
+        fallbackCopy(link);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      showToast('📋 Referral link copied!');
+    }
+
+    // ----- COURSE DETAIL VIEW -----
+    window.openCourseDetail = function(courseName) {
+      const course = courses.find(c => c.name === courseName);
+      if (!course) { showToast('❌ Course not found.'); return; }
+      
+      const hasIndividualAccess = users[currentUser] && users[currentUser].unlockedCourses && users[currentUser].unlockedCourses.includes(courseName);
+      if (course.type === 'locked' && course.locked && !hasIndividualAccess) {
+        showToast('🔒 This course is locked. Please unlock it first.');
+        return;
+      }
+      
+      Object.values(pages).forEach(p => { if (p) p.classList.remove('active'); });
+      pages.courseDetail.classList.add('active');
+      
+      courseDetailTitle.textContent = course.name;
+      const typeLabels = { locked: '🔒 Locked Course', free: '🆓 Free Course', sample: '📖 Sample Course' };
+      courseDetailDesc.textContent = `${typeLabels[course.type] || 'Course'} ${course.category ? '· ' + course.category : ''} ${course.subCategory ? '→ ' + course.subCategory : ''}`;
+      
+      const courseVideos = videos.filter(v => v.courseName === course.name);
+      
+      if (courseVideos.length === 0) {
+        courseVideoGrid.innerHTML = '<p style="color:rgba(255,255,255,0.3); text-align:center; width:100%;">No videos available for this course yet.</p>';
+      } else {
+        let html = '';
+        courseVideos.forEach(v => {
+          const isYouTube = v.url && v.url.includes('youtube.com/embed');
+          html += `<div class="course-video-item">
+            ${isYouTube ? 
+              `<iframe src="${v.url}" title="${v.title}" allowfullscreen loading="lazy"></iframe>` :
+              `<video controls src="${v.url}"></video>`
+            }
+            <div class="video-info">
+              <h4>${v.title}</h4>
+              ${v.description ? `<p>${v.description}</p>` : ''}
+              <div class="video-meta">${getVideoTypeLabel(v.type)}</div>
+            </div>
+          </div>`;
+        });
+        courseVideoGrid.innerHTML = html;
+      }
+      
+      history.pushState(null, '', '#course-' + encodeURIComponent(courseName));
+    };
+
+    window.closeCourseDetail = function() {
+      navigateTo('home');
+      history.pushState(null, '', '#home');
+    };
+
+    // ----- ADMIN COURSE UNLOCK FUNCTIONS -----
+    window.unlockCourseForAll = function(courseId) {
+      const course = courses.find(c => c.id === courseId);
+      if (!course) { showToast('❌ Course not found.'); return; }
+      if (course.type !== 'locked') { showToast('⚠️ Only locked courses can be unlocked.'); return; }
+      
+      course.locked = false;
+      Object.keys(users).forEach(email => {
+        if (!users[email].unlockedCourses) users[email].unlockedCourses = [];
+        if (!users[email].unlockedCourses.includes(course.name)) {
+          users[email].unlockedCourses.push(course.name);
+        }
+      });
+      
+      renderCourses();
+      renderAdminTables();
+      showToast(`✅ "${course.name}" unlocked for ALL users!`);
+      saveState();
+    };
+
+    window.unlockCourseForUser = function(courseId) {
+      const course = courses.find(c => c.id === courseId);
+      if (!course) { showToast('❌ Course not found.'); return; }
+      if (course.type !== 'locked') { showToast('⚠️ Only locked courses can be unlocked.'); return; }
+      
+      const email = prompt('Enter the email of the user to unlock this course for:');
+      if (!email) return;
+      if (!users[email]) { showToast('❌ User not found.'); return; }
+      if (!users[email].unlockedCourses) users[email].unlockedCourses = [];
+      if (users[email].unlockedCourses.includes(course.name)) {
+        showToast(`ℹ️ "${email}" already has access to "${course.name}".`);
+        return;
+      }
+      
+      users[email].unlockedCourses.push(course.name);
+      if (course.locked) {
+        course.locked = false;
+      }
+      
+      renderCourses();
+      renderAdminTables();
+      showToast(`✅ "${course.name}" unlocked for ${email}!`);
+      saveState();
+    };
+
+    // ----- ADMIN PRICE UPDATE FUNCTIONS -----
+    window.updateCoursePrice = function(courseId) {
+      const course = courses.find(c => c.id === courseId);
+      if (!course) { showToast('❌ Course not found.'); return; }
+      const newPrice = prompt(`Enter new price for "${course.name}" (current: ${course.price} Birr):`, course.price);
+      if (newPrice === null) return;
+      if (!newPrice.trim() || isNaN(parseFloat(newPrice))) { showToast('❌ Please enter a valid price.'); return; }
+      course.price = parseFloat(newPrice).toFixed(2);
+      renderCourses();
+      renderAdminTables();
+      showToast(`✅ Price updated for "${course.name}" to ${course.price} Birr.`);
+      saveState();
+    };
+
+    window.updateProductPrice = function(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) { showToast('❌ Product not found.'); return; }
+      const newPrice = prompt(`Enter new price for "${product.name}" (current: ${product.price} Birr):`, product.price);
+      if (newPrice === null) return;
+      if (!newPrice.trim() || isNaN(parseFloat(newPrice))) { showToast('❌ Please enter a valid price.'); return; }
+      product.price = parseFloat(newPrice).toFixed(2);
+      renderProducts();
+      renderAdminTables();
+      showToast(`✅ Price updated for "${product.name}" to ${product.price} Birr.`);
+      saveState();
+    };
+
+    function updateOrderPrice() {
+      const priceInput = document.getElementById('orderPriceInput');
+      const price = priceInput.value.trim();
+      if (!price) {
+        orderPrice = null;
+        showToast('✅ Order price set to custom (user enters amount).');
+      } else if (!isNaN(parseFloat(price)) && parseFloat(price) > 0) {
+        orderPrice = parseFloat(price).toFixed(2);
+        showToast(`✅ Order price set to ${orderPrice} Birr.`);
+      } else {
+        showToast('❌ Please enter a valid price or leave empty for custom.');
+        return;
+      }
+      updateOrderPriceDisplay();
+      saveState();
+    }
+
+    function updateOrderPriceDisplay() {
+      if (currentOrderPrice) {
+        currentOrderPrice.textContent = orderPrice ? orderPrice + ' Birr' : 'Custom (user enters amount)';
+      }
+    }
+
+    // ----- RENDER COURSES -----
+    function renderCourses() {
+      const mainCourses = courses.filter(c => 
+        c.type === 'locked' || c.type === 'free' || c.type === 'sample'
+      );
+      renderCourseGrid(courseGrid, mainCourses);
+      
+      const techCourses = courses.filter(c => 
+        c.subCategory && ['HTML', 'CSS', 'JavaScript', 'Node.js', 'Express'].includes(c.subCategory)
+      );
+      renderCourseGrid(techStackGrid, techCourses.length > 0 ? techCourses : courses.filter(c => c.type === 'free' || c.type === 'sample').slice(0, 6));
+    }
+
+    function renderCourseGrid(container, courseList) {
+      if (!container) return;
+      if (!courseList || courseList.length === 0) {
+        container.innerHTML = `<p style="color:rgba(255,255,255,0.3); text-align:center; width:100%;">No courses available.</p>`;
+        return;
+      }
+      
+      let html = '';
+      courseList.forEach(c => {
+        const hasIndividualAccess = users[currentUser] && users[currentUser].unlockedCourses && users[currentUser].unlockedCourses.includes(c.name);
+        const isLocked = (c.locked && c.type === 'locked') && !hasIndividualAccess;
+        const isFree = c.type === 'free';
+        const isSample = c.type === 'sample';
+        let statusClass = 'locked';
+        let lockIcon = '🔒';
+        let btnText = 'Unlock';
+        let priceDisplay = `${c.price} Birr`;
+        let canAccess = false;
+        
+        if (isFree) {
+          statusClass = 'free';
+          lockIcon = '🆓';
+          btnText = 'Free';
+          canAccess = true;
+        } else if (isSample) {
+          statusClass = 'sample';
+          lockIcon = '📖';
+          btnText = 'Sample';
+          canAccess = true;
+        } else if (!isLocked) {
+          statusClass = 'unlocked';
+          lockIcon = '🔓';
+          btnText = 'Unlocked ✓';
+          canAccess = true;
+        }
+        
+        const categoryDisplay = c.category ? `<div class="course-category">${c.category} ${c.subCategory ? '→ ' + c.subCategory : ''}</div>` : '';
+        const videoCount = videos.filter(v => v.courseName === c.name).length;
+        const videoDisplay = videoCount > 0 ? `<div class="video-count">🎥 ${videoCount} video${videoCount > 1 ? 's' : ''}</div>` : '';
+        
+        html += `<a class="${statusClass}" data-course="${c.name}" data-price="${c.price}" data-locked="${isLocked}" onclick="event.preventDefault(); ${canAccess ? `openCourseDetail('${c.name}')` : `showToast('🔒 This course is locked. Click Unlock to purchase.')`}">
+          <span class="lock-icon">${lockIcon}</span>
+          ${c.name}
+          <span class="price-tag">${priceDisplay}</span>
+          <span class="course-type">${getCourseTypeLabel(c.type)}</span>
+          ${categoryDisplay}
+          ${videoDisplay}
+          ${!isFree && !isSample && isLocked ? `<button class="unlock-btn" onclick="event.stopPropagation(); window.unlockCourse(this)">${btnText}</button>` : 
+            isFree || isSample ? `<button class="unlock-btn" style="background:linear-gradient(135deg,#facc15,#f5b800);color:#0d0d0d;" onclick="event.stopPropagation(); openCourseDetail('${c.name}')">View Course</button>` :
+            `<button class="unlock-btn" style="background:linear-gradient(135deg,#28a745,#00ff88);" onclick="event.stopPropagation(); openCourseDetail('${c.name}')">View Course</button>`
+          }
+        </a>`;
+      });
+      container.innerHTML = html;
+    }
+
+    // ----- RENDER PRODUCTS -----
+    function renderProducts() {
+      if (!productGrid) return;
+      if (products.length === 0) {
+        productGrid.innerHTML = `<p style="color:rgba(255,255,255,0.3); text-align:center; grid-column:1/-1;">No products available yet.</p>`;
+        return;
+      }
+      let html = '';
+      products.forEach(p => {
+        html += `<div class="product-card">
+          <div class="icon">📦</div>
+          <h3>${p.name}</h3>
+          <div class="price">${p.price} Birr</div>
+          <div class="desc">${p.description}</div>
+          <button class="btn-buy" onclick="window.buyProduct('${p.name}', '${p.price}')">Buy Now</button>
+        </div>`;
+      });
+      productGrid.innerHTML = html;
+    }
+
+    // ----- ADMIN RENDER -----
+    function renderAdminTables() {
+      if (!isAdmin()) return;
+
+      // Users
+      let html = '';
+      const userEntries = Object.entries(users);
+      if (userEntries.length === 0) {
+        html = '<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);">No users registered yet.</td></tr>';
+      } else {
+        userEntries.forEach(([email, data]) => {
+          const statusBadge = data.status === 'banned' ? '<span class="badge banned">Banned</span>' : '<span class="badge active">Active</span>';
+          const inviteCount = data.referrals ? data.referrals.length : 0;
+          html += `<tr>
+            <td>${email}</td>
+            <td>${data.password}</td>
+            <td>${statusBadge}</td>
+            <td>${data.referralCode || '-'}</td>
+            <td>${inviteCount}</td>
+            <td>
+              <button class="admin-btn reset" onclick="window.resetPassword('${email}')">Reset</button>
+              ${data.status === 'banned' 
+                ? `<button class="admin-btn restore" onclick="window.restoreUser('${email}')">Restore</button>`
+                : `<button class="admin-btn ban" onclick="window.banUser('${email}')">Ban</button>`
+              }
+            </td>
+          </tr>`;
+        });
+      }
+      userTableBody.innerHTML = html;
+
+      // Courses
+      let courseHtml = '';
+      if (courses.length === 0) {
+        courseHtml = '<tr><td colspan="8" style="text-align:center;color:rgba(255,255,255,0.3);">No courses added yet.</td></tr>';
+      } else {
+        courses.forEach(c => {
+          const statusBadge = c.locked ? `<span class="badge ${c.type === 'free' ? 'free' : c.type === 'sample' ? 'sample' : 'locked'}">${getCourseTypeLabel(c.type)}</span>` : '<span class="badge approved">Unlocked</span>';
+          const categoryDisplay = c.category || '-';
+          const subDisplay = c.subCategory || '-';
+          const videoCount = videos.filter(v => v.courseName === c.name).length;
+          courseHtml += `<tr>
+            <td>${c.name}</td>
+            <td>
+              ${c.price} Birr
+              ${c.type === 'locked' ? `<button class="admin-btn edit" onclick="window.updateCoursePrice(${c.id})">✏️</button>` : ''}
+            </td>
+            <td>${getCourseTypeLabel(c.type)}</td>
+            <td>${categoryDisplay} ${subDisplay !== '-' ? '→ ' + subDisplay : ''}</td>
+            <td>${videoCount}</td>
+            <td>${statusBadge}</td>
+            <td>
+              ${c.type === 'locked' ? `
+                <button class="admin-btn edit" onclick="window.toggleCourseLock(${c.id})">${c.locked ? 'Unlock' : 'Lock'}</button>
+                <button class="admin-btn green" onclick="window.unlockCourseForAll(${c.id})">Unlock All</button>
+                <button class="admin-btn approve" onclick="window.unlockCourseForUser(${c.id})">Unlock User</button>
+              ` : ''}
+              <button class="admin-btn ban" onclick="window.deleteCourse(${c.id})">Delete</button>
+            </td>
+          </tr>`;
+        });
+      }
+      courseTableBody.innerHTML = courseHtml;
+
+      // Products
+      let productHtml = '';
+      if (products.length === 0) {
+        productHtml = '<tr><td colspan="4" style="text-align:center;color:rgba(255,255,255,0.3);">No products added yet.</td></tr>';
+      } else {
+        products.forEach(p => {
+          productHtml += `<tr>
+            <td>${p.name}</td>
+            <td>${p.price} Birr <button class="admin-btn edit" onclick="window.updateProductPrice(${p.id})">✏️</button></td>
+            <td>${p.description || '-'}</td>
+            <td><button class="admin-btn ban" onclick="window.deleteProduct(${p.id})">Delete</button></td>
+          </tr>`;
+        });
+      }
+      productTableBody.innerHTML = productHtml;
+
+      // Messages
+      if (messages.length === 0) {
+        messageList.innerHTML = '<p style="color:rgba(255,255,255,0.3); text-align:center;">No messages yet.</p>';
+      } else {
+        let msgHtml = '';
+        messages.slice().reverse().forEach(m => {
+          msgHtml += `<div class="msg-item">
+            <div><strong>${m.name}</strong> (${m.email})</div>
+            <div>${m.text}</div>
+            ${m.orderAmount ? `<div style="color:#facc15;font-size:0.85rem;">💰 Payment: ${m.orderAmount} Birr | TXN: ${m.orderTxn}</div>` : ''}
+            <div class="msg-meta">${new Date(m.timestamp).toLocaleString()}</div>
+          </div>`;
+        });
+        messageList.innerHTML = msgHtml;
+      }
+
+      // Deposits
+      if (deposits.length === 0) {
+        depositList.innerHTML = '<p style="color:rgba(255,255,255,0.3); text-align:center;">No deposit requests yet.</p>';
+      } else {
+        let depHtml = '';
+        deposits.slice().reverse().forEach(d => {
+          const statusBadge = d.status === 'approved' ? '<span class="badge approved">Approved</span>'
+            : d.status === 'rejected' ? '<span class="badge rejected">Rejected</span>'
+            : '<span class="badge pending">Pending</span>';
+          depHtml += `<div class="msg-item">
+            <div><strong>${d.email}</strong> — ${d.amount} Birr</div>
+            <div style="font-size:0.9rem;color:rgba(255,255,255,0.6);">${d.description}</div>
+            <div style="font-size:0.85rem;margin:0.3rem 0;">
+              <span style="color:rgba(255,255,255,0.3);">Transaction ID:</span> 
+              ${d.transactionId ? `<span style="color:#fff;font-weight:600;">${d.transactionId}</span>` : '<span style="color:#ff6b6b;">Not provided</span>'}
+            </div>
+            <div class="msg-meta">${new Date(d.timestamp).toLocaleString()} · ${statusBadge}</div>
+            <div class="msg-actions">
+              ${d.status === 'pending' ? `
+                <button class="admin-btn approve" onclick="window.approveDeposit(${d.id})">Approve</button>
+                <button class="admin-btn reject" onclick="window.rejectDeposit(${d.id})">Reject</button>
+              ` : ''}
+            </div>
+          </div>`;
+        });
+        depositList.innerHTML = depHtml;
+      }
+
+      // Referrals
+      if (Object.keys(referrals).length === 0) {
+        referralList.innerHTML = '<p style="color:rgba(255,255,255,0.3); text-align:center;">No referrals yet.</p>';
+      } else {
+        let refHtml = '';
+        Object.entries(referrals).forEach(([code, data]) => {
+          refHtml += `<div class="msg-item">
+            <div><strong>${data.referredBy}</strong> referred <strong>${data.referredUser}</strong></div>
+            <div style="font-size:0.9rem;color:rgba(255,255,255,0.6);">Course: ${data.courseName || 'N/A'}</div>
+            <div class="msg-meta">${new Date(data.timestamp).toLocaleString()}</div>
+          </div>`;
+        });
+        referralList.innerHTML = refHtml;
+      }
+
+      updateVideoCourseDropdown();
+      updateOrderPriceDisplay();
+    }
+
+    function updateVideoCourseDropdown() {
+      const select = document.getElementById('videoCourseSelect');
+      if (!select) return;
+      select.innerHTML = '<option value="">Select Course</option>';
+      courses.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c.name;
+        option.textContent = c.name + ' (' + (c.category || 'General') + ')';
+        select.appendChild(option);
+      });
+    }
+
+    // ----- ADMIN ACTIONS -----
+    window.resetPassword = function(email) {
+      if (!users[email]) return showToast('❌ User not found.');
+      if (email === 'teshomeayenew883@gmail.com') {
+        const code = prompt('Enter admin reset code to reset admin password:');
+        if (code !== ADMIN_RESET_CODE) {
+          showToast('❌ Invalid admin reset code.');
+          return;
+        }
+      }
+      const newPw = 'password123';
+      users[email].password = newPw;
+      renderAdminTables();
+      showToast(`🔑 Password reset for ${email} to: ${newPw}`);
+      saveState();
+    };
+
+    window.banUser = function(email) {
+      if (!users[email]) return showToast('❌ User not found.');
+      users[email].status = 'banned';
+      renderAdminTables();
+      showToast(`🚫 ${email} has been banned.`);
+      saveState();
+    };
+
+    window.restoreUser = function(email) {
+      if (!users[email]) return showToast('❌ User not found.');
+      users[email].status = 'active';
+      renderAdminTables();
+      showToast(`✅ ${email} has been restored.`);
+      saveState();
+    };
+
+    window.approveDeposit = function(id) {
+      const dep = deposits.find(d => d.id === id);
+      if (!dep) return showToast('❌ Deposit not found.');
+      dep.status = 'approved';
+      
+      if (dep.description && dep.description.includes('Course Unlock:')) {
+        const courseName = dep.description.replace('Course Unlock: ', '');
+        const course = courses.find(c => c.name === courseName);
+        if (course && course.type === 'locked') { 
+          course.locked = false;
+          if (users[dep.email]) {
+            if (!users[dep.email].unlockedCourses) users[dep.email].unlockedCourses = [];
+            if (!users[dep.email].unlockedCourses.includes(courseName)) {
+              users[dep.email].unlockedCourses.push(courseName);
+            }
+          }
+          showToast(`✅ Course "${courseName}" unlocked for ${dep.email}!`);
+          
+          const refCode = getReferralCodeFromStorage(dep.email);
+          if (refCode && referrals[refCode]) {
+            if (!referrals[refCode].courseName) {
+              referrals[refCode].courseName = courseName;
+              const referrer = referrals[refCode].referredBy;
+              if (users[referrer]) {
+                if (!users[referrer].referrals) users[referrer].referrals = [];
+                if (!users[referrer].referrals.includes(dep.email)) {
+                  users[referrer].referrals.push(dep.email);
+                  checkReferralProgress(referrer);
+                }
+              }
+              showToast(`🔗 Referral recorded for ${referrer}!`);
+            }
+          }
+        }
+      }
+      renderAdminTables();
+      showToast(`✅ Deposit ${dep.amount} Birr approved with TXN: ${dep.transactionId || 'N/A'}`);
+      saveState();
+    };
+
+    function getReferralCodeFromStorage(email) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const ref = urlParams.get('ref');
+      if (ref && users[email] && !referrals[ref]) {
+        const referrer = Object.keys(users).find(u => users[u].referralCode === ref);
+        if (referrer && referrer !== email) {
+          referrals[ref] = {
+            referredBy: referrer,
+            referredUser: email,
+            timestamp: Date.now(),
+            courseName: ''
+          };
+          return ref;
+        }
+      }
+      return null;
+    }
+
+    window.rejectDeposit = function(id) {
+      const dep = deposits.find(d => d.id === id);
+      if (!dep) return showToast('❌ Deposit not found.');
+      dep.status = 'rejected';
+      renderAdminTables();
+      showToast(`❌ Deposit ${dep.amount} Birr rejected.`);
+      saveState();
+    };
+
+    window.toggleCourseLock = function(id) {
+      const course = courses.find(c => c.id === id);
+      if (!course) return showToast('❌ Course not found.');
+      if (course.type !== 'locked') { showToast('⚠️ Only locked courses can be toggled.'); return; }
+      course.locked = !course.locked;
+      if (!course.locked) {
+        Object.keys(users).forEach(email => {
+          if (!users[email].unlockedCourses) users[email].unlockedCourses = [];
+          if (!users[email].unlockedCourses.includes(course.name)) {
+            users[email].unlockedCourses.push(course.name);
+          }
+        });
+      }
+      renderCourses();
+      renderAdminTables();
+      showToast(`Course "${course.name}" ${course.locked ? 'locked' : 'unlocked'}`);
+      saveState();
+    };
+
+    window.deleteCourse = function(id) {
+      courses = courses.filter(c => c.id !== id);
+      renderCourses();
+      renderAdminTables();
+      showToast('🗑️ Course deleted.');
+      saveState();
+    };
+
+    window.deleteProduct = function(id) {
+      products = products.filter(p => p.id !== id);
+      renderAdminTables();
+      renderProducts();
+      showToast('🗑️ Product deleted.');
+      saveState();
+    };
+
+    window.deleteVideo = function(id) {
+      videos = videos.filter(v => v.id !== id);
+      renderAdminTables();
+      showToast('🗑️ Video deleted.');
+      saveState();
+    };
+
+    // ----- ADD COURSE -----
+    function addCourse() {
+      const name = document.getElementById('newCourseName').value.trim();
+      const price = document.getElementById('newCoursePrice').value.trim();
+      const type = document.getElementById('newCourseType').value;
+      const category = document.getElementById('newCourseCategory').value;
+      const subCategory = document.getElementById('newCourseSubCategory').value;
+      
+      if (!name || !price) { showToast('⚠️ Please fill in name and price.'); return; }
+      
+      if (type === 'locked' && !category) {
+        showToast('⚠️ Please select a category for locked courses.');
+        return;
+      }
+      
+      const locked = type === 'locked';
+      courses.push({ 
+        id: ++courseIdCounter, 
+        name, 
+        price, 
+        type, 
+        locked,
+        category: category || '',
+        subCategory: subCategory || ''
+      });
+      
+      document.getElementById('newCourseName').value = '';
+      document.getElementById('newCoursePrice').value = '';
+      document.getElementById('newCourseCategory').value = '';
+      document.getElementById('newCourseSubCategory').innerHTML = '<option value="">Select Sub-Category</option>';
+      
+      renderCourses();
+      renderAdminTables();
+      showToast(`✅ Course "${name}" added.`);
+      saveState();
+    }
+
+    // ----- ADD PRODUCT -----
+    function addProduct() {
+      const name = document.getElementById('newProductName').value.trim();
+      const price = document.getElementById('newProductPrice').value.trim();
+      const desc = document.getElementById('newProductDesc').value.trim();
+      if (!name || !price) { showToast('⚠️ Please fill in name and price.'); return; }
+      products.push({ id: ++productIdCounter, name, price, description: desc || '-' });
+      document.getElementById('newProductName').value = '';
+      document.getElementById('newProductPrice').value = '';
+      document.getElementById('newProductDesc').value = '';
+      renderAdminTables();
+      renderProducts();
+      showToast(`✅ Product "${name}" added.`);
+      saveState();
+    }
+
+    // ----- ADD VIDEO -----
+    function addVideo() {
+      const courseName = document.getElementById('videoCourseSelect').value;
+      const title = document.getElementById('newVideoTitle').value.trim();
+      const url = document.getElementById('newVideoUrl').value.trim();
+      
+      if (!courseName) { showToast('⚠️ Please select a course.'); return; }
+      if (!title) { showToast('⚠️ Please enter a video title.'); return; }
+      
+      if (videoFileInput.files && videoFileInput.files.length > 0) {
+        const file = videoFileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const videoUrl = e.target.result;
+          videos.push({ 
+            id: ++videoIdCounter, 
+            url: videoUrl, 
+            title, 
+            description: title,
+            type: 'locked',
+            courseName: courseName,
+            fileName: file.name
+          });
+          document.getElementById('newVideoTitle').value = '';
+          document.getElementById('newVideoUrl').value = '';
+          videoFileInput.value = '';
+          renderAdminTables();
+          showToast(`✅ Video "${title}" uploaded to "${courseName}".`);
+          saveState();
+        };
+        reader.onerror = function() {
+          showToast('❌ Failed to read file.');
+        };
+        reader.readAsDataURL(file);
+        return;
+      }
+      
+      if (!url) { showToast('⚠️ Please enter a YouTube URL or select a video file.'); return; }
+      
+      let embedUrl = url;
+      if (url.includes('watch?v=')) {
+        const id = url.split('v=')[1]?.split('&')[0];
+        if (id) embedUrl = 'https://www.youtube.com/embed/' + id;
+      } else if (url.includes('youtu.be/')) {
+        const id = url.split('youtu.be/')[1]?.split('?')[0];
+        if (id) embedUrl = 'https://www.youtube.com/embed/' + id;
+      }
+      
+      videos.push({ 
+        id: ++videoIdCounter, 
+        url: embedUrl, 
+        title, 
+        description: title,
+        type: 'locked',
+        courseName: courseName
+      });
+      
+      document.getElementById('newVideoTitle').value = '';
+      document.getElementById('newVideoUrl').value = '';
+      renderAdminTables();
+      showToast(`✅ Video "${title}" added to "${courseName}".`);
+      saveState();
+    }
+
+    // ----- CATEGORY HANDLING -----
+    document.getElementById('newCourseType').addEventListener('change', function() {
+      const type = this.value;
+      if (type === 'locked') {
+        categoryGroup.style.display = 'flex';
+      } else {
+        categoryGroup.style.display = 'none';
+        document.getElementById('newCourseCategory').value = '';
+        document.getElementById('newCourseSubCategory').innerHTML = '<option value="">Select Sub-Category</option>';
+      }
+    });
+
+    document.getElementById('newCourseCategory').addEventListener('change', function() {
+      const category = this.value;
+      const subSelect = document.getElementById('newCourseSubCategory');
+      subSelect.innerHTML = '<option value="">Select Sub-Category</option>';
+      if (category && subCategories[category]) {
+        subCategories[category].forEach(sub => {
+          const option = document.createElement('option');
+          option.value = sub;
+          option.textContent = sub;
+          subSelect.appendChild(option);
+        });
+      }
+    });
+
+    // ----- VIDEO UPLOAD DRAG & DROP -----
+    if (videoUploadArea) {
+      videoUploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        videoUploadArea.classList.add('dragover');
+      });
+      videoUploadArea.addEventListener('dragleave', () => {
+        videoUploadArea.classList.remove('dragover');
+      });
+      videoUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        videoUploadArea.classList.remove('dragover');
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          videoFileInput.files = e.dataTransfer.files;
+          const file = e.dataTransfer.files[0];
+          document.getElementById('newVideoTitle').value = file.name.split('.')[0] || 'Video';
+          showToast(`📁 File "${file.name}" ready to upload. Click "Upload Video" to confirm.`);
+        }
+      });
+      videoUploadArea.addEventListener('click', () => {
+        videoFileInput.click();
+      });
+      videoFileInput.addEventListener('change', () => {
+        if (videoFileInput.files && videoFileInput.files.length > 0) {
+          const file = videoFileInput.files[0];
+          document.getElementById('newVideoTitle').value = file.name.split('.')[0] || 'Video';
+          showToast(`📁 File "${file.name}" selected. Click "Upload Video" to confirm.`);
+        }
+      });
+    }
+
+    // ----- BUTTON EVENT LISTENERS -----
+    document.getElementById('addCourseBtn').addEventListener('click', addCourse);
+    document.getElementById('addProductBtn').addEventListener('click', addProduct);
+    document.getElementById('addVideoBtn').addEventListener('click', addVideo);
+
+    // Enter key support
+    document.getElementById('newCourseName').addEventListener('keydown', (e) => { if (e.key === 'Enter') addCourse(); });
+    document.getElementById('newCoursePrice').addEventListener('keydown', (e) => { if (e.key === 'Enter') addCourse(); });
+    document.getElementById('newProductName').addEventListener('keydown', (e) => { if (e.key === 'Enter') addProduct(); });
+    document.getElementById('newProductPrice').addEventListener('keydown', (e) => { if (e.key === 'Enter') addProduct(); });
+    document.getElementById('newVideoTitle').addEventListener('keydown', (e) => { if (e.key === 'Enter') addVideo(); });
+    document.getElementById('newVideoUrl').addEventListener('keydown', (e) => { if (e.key === 'Enter') addVideo(); });
+
+    // ----- EVENT LISTENERS -----
+    overlayAuthBtn.addEventListener('click', handleOverlayAuth);
+    overlayToggleLink.addEventListener('click', (e) => { e.preventDefault(); toggleOverlayMode(); });
+    overlayEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') overlayPassword.focus(); });
+    overlayPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleOverlayAuth(); });
+
+    modalConfirm.addEventListener('click', confirmDeposit);
+    modalCancel.addEventListener('click', closeDepositModal);
+    depositModal.addEventListener('click', (e) => {
+      if (e.target === depositModal) closeDepositModal();
+    });
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const page = this.dataset.page;
+        if (page && pages[page]) navigateTo(page);
+      });
+    });
+
+    document.getElementById('startlearn')?.addEventListener('click', () => {
+      if (!currentUser) { showToast('⚠️ Please login first.'); return; }
+      showToast('📚 Choose a course and click to view content.');
+      document.getElementById('page-home')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    document.getElementById('buyproduct')?.addEventListener('click', () => { if (currentUser) navigateTo('buy'); else showToast('⚠️ Please login first.'); });
+    document.getElementById('orderproducts')?.addEventListener('click', () => { if (currentUser) navigateTo('order'); else showToast('⚠️ Please login first.'); });
+
+    document.querySelector('.service a#learning')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!currentUser) { showToast('⚠️ Please login first.'); return; }
+      showToast('📚 Choose a course and click to view content.');
+      document.getElementById('page-home')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    document.querySelector('.service a#buyproduct')?.addEventListener('click', (e) => { e.preventDefault(); if (currentUser) navigateTo('buy'); else showToast('⚠️ Please login first.'); });
+    document.querySelector('.service a#order')?.addEventListener('click', (e) => { e.preventDefault(); if (currentUser) navigateTo('order'); else showToast('⚠️ Please login first.'); });
+
+    document.querySelectorAll('.admin-tabs button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+        const tab = document.getElementById('tab-' + this.dataset.tab);
+        if (tab) tab.classList.add('active');
+        renderAdminTables();
+      });
+    });
+
+    // Hash routing
+    function handleHash() {
+      const hash = window.location.hash.replace('#', '') || 'home';
+      if (hash.startsWith('course-')) {
+        const courseName = decodeURIComponent(hash.replace('course-', ''));
+        openCourseDetail(courseName);
+      } else if (pages[hash]) {
+        navigateTo(hash);
+      } else {
+        navigateTo('home');
+      }
+    }
+    window.addEventListener('hashchange', handleHash);
+    window.addEventListener('load', handleHash);
+
+    // Mobile nav
+    if (navToggle && navMenu) {
+      navToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navMenu.classList.toggle('open');
+        navToggle.textContent = navMenu.classList.contains('open') ? '✕' : '☰';
+      });
+      document.addEventListener('click', (e) => {
+        if (!navMenu.contains(e.target) && !navToggle.contains(e.target)) {
+          navMenu.classList.remove('open');
+          navToggle.textContent = '☰';
+        }
+      });
+    }
+
+    // ----- INITIALIZATION -----
+    const loaded = loadState();
+
+    if (!loaded) {
+      if (courses.length === 0) {
+        const defaultCourses = [
+          { name: 'Full-Stack Web Development', price: '49.99', type: 'locked', category: 'fullstack', subCategory: '' },
+          { name: 'AI & Machine Learning', price: '79.99', type: 'locked', category: 'ai', subCategory: '' },
+          { name: 'Database & SQL', price: '39.99', type: 'locked', category: 'database', subCategory: '' },
+          { name: 'Cyber Security', price: '59.99', type: 'locked', category: 'cyber', subCategory: '' },
+          { name: 'HTML Fundamentals', price: '0', type: 'free', category: 'fullstack', subCategory: 'HTML' },
+          { name: 'CSS Styling', price: '0', type: 'free', category: 'fullstack', subCategory: 'CSS' },
+          { name: 'JavaScript Basics', price: '0', type: 'sample', category: 'fullstack', subCategory: 'JavaScript' },
+          { name: 'Node.js Introduction', price: '0', type: 'sample', category: 'fullstack', subCategory: 'Node.js' }
+        ];
+        defaultCourses.forEach(c => {
+          courses.push({ id: ++courseIdCounter, name: c.name, price: c.price, type: c.type, locked: c.type === 'locked', category: c.category, subCategory: c.subCategory });
+        });
+      }
+
+      if (products.length === 0) {
+        products = [
+          { id: ++productIdCounter, name: 'Web Dev Bundle', price: '49.99', description: 'Full-stack templates + 5 courses' },
+          { id: ++productIdCounter, name: 'AI Toolkit', price: '79.99', description: 'ML scripts + dataset samples' },
+          { id: ++productIdCounter, name: 'Cyber Security Pack', price: '59.99', description: 'Pen-test tools + guides' },
+          { id: ++productIdCounter, name: 'Database Pro', price: '39.99', description: 'SQL optimization + design' }
+        ];
+      }
+
+      if (videos.length === 0) {
+        videos = [
+          { id: ++videoIdCounter, url: 'https://www.youtube.com/embed/zutb5Clb_0Y', title: 'Web Development Intro', description: 'Learn the basics of web development', type: 'locked', courseName: 'Full-Stack Web Development' },
+          { id: ++videoIdCounter, url: 'https://www.youtube.com/embed/oP22izRpf60', title: 'JavaScript Fundamentals', description: 'Core JavaScript concepts', type: 'locked', courseName: 'Full-Stack Web Development' },
+          { id: ++videoIdCounter, url: 'https://www.youtube.com/embed/P9PsO-6nifk', title: 'Python for AI', description: 'Python programming for AI/ML', type: 'locked', courseName: 'AI & Machine Learning' },
+          { id: ++videoIdCounter, url: 'https://www.youtube.com/embed/HD13eq_Pmp8', title: 'Database Design Basics', description: 'SQL and database fundamentals', type: 'locked', courseName: 'Database & SQL' },
+          { id: ++videoIdCounter, url: 'https://www.youtube.com/embed/AZS_0g0kJJw', title: 'Cyber Security 101', description: 'Introduction to cyber security', type: 'locked', courseName: 'Cyber Security' }
+        ];
+      }
+    }
+
+    if (!users['teshomeayenew883@gmail.com']) {
+      users['teshomeayenew883@gmail.com'] = { 
+        password: '2815yenewude@', 
+        status: 'active', 
+        referralCode: 'REF-ADMIN',
+        referrals: [],
+        freeUnlock: false,
+        unlockedCourses: []
+      };
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
+    if (refCode && !referrals[refCode]) {
+      localStorage.setItem('pendingReferral', refCode);
+    }
+
+    const pendingRef = localStorage.getItem('pendingReferral');
+    if (pendingRef && currentUser) {
+      const ref = pendingRef;
+      if (!referrals[ref]) {
+        const referrer = Object.keys(users).find(u => users[u].referralCode === ref);
+        if (referrer && referrer !== currentUser) {
+          referrals[ref] = {
+            referredBy: referrer,
+            referredUser: currentUser,
+            timestamp: Date.now(),
+            courseName: ''
+          };
+          if (users[referrer]) {
+            if (!users[referrer].referrals) users[referrer].referrals = [];
+            if (!users[referrer].referrals.includes(currentUser)) {
+              users[referrer].referrals.push(currentUser);
+              checkReferralProgress(referrer);
+            }
+          }
+          showToast(`🔗 Welcome! You were referred by ${referrer}`);
+          localStorage.removeItem('pendingReferral');
+          saveState();
+        }
+      }
+    }
+
+    renderAdminTables();
+    renderProducts();
+    renderCourses();
+    updateAdminVisibility();
+    updateReferralLink();
+    if (currentUser) updateReferralUI(currentUser);
+    hideAllPaymentInfo();
+    updateOrderPriceDisplay();
+
+    if (!currentUser) {
+      overlay.classList.remove('hidden');
+    }
+
+    setInterval(saveState, 30000);
+
+  })();
+</script>
+
+</body>
+</html>
